@@ -1,6 +1,6 @@
 #include "quickfix/FileStore.h"
 #include "quickfix/SocketInitiator.h"
-#include "Application.h"
+#include "Application/Application.h"
 
 int main( int argc, char** argv )
 {

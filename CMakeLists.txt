@@ -8,7 +8,7 @@ link_directories( /usr/local/lib )
 
 include_directories(include /usr/local/include/quickfix)
 
-file(GLOB SOURCES "src/*.cpp")
+set(SOURCES src/main.cpp src/Application/Application.cpp)
 
 add_executable(curve_fix ${SOURCES})
 

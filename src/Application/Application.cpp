@@ -1,4 +1,4 @@
-#include "Application.h"
+#include "Application/Application.h"
 
 void Application::onLogon( const FIX::SessionID& sessionID )
 {
@@ -30,4 +30,6 @@ void Application::onMessage
 void Application::run()
 {
     std::cout << "Running Curve FIX Client." << std::endl;
+
+    while(true) {}
 }
