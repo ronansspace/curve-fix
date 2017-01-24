@@ -6,10 +6,10 @@ set(CMAKE_CXX_STANDARD 11)
 set ( PROJECT_LINK_LIBS quickfix )
 link_directories( /usr/local/lib )
 
-include_directories(/usr/local/include/quickfix)
+include_directories(include /usr/local/include/quickfix)
 
-set(SOURCE_FILES Application.cpp main.cpp)
+file(GLOB SOURCES "src/*.cpp")
 
-add_executable(curve_fix ${SOURCE_FILES})
+add_executable(curve_fix ${SOURCES})
 
 target_link_libraries(curve_fix ${PROJECT_LINK_LIBS} )
