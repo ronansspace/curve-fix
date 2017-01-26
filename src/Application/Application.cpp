@@ -13,6 +13,7 @@ void Application::onLogout( const FIX::SessionID& sessionID )
 void Application::fromApp( const FIX::Message& message, const FIX::SessionID& sessionID )
 throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType )
 {
+    std::cout << std::endl << "OUTOUT: " << message << std::endl;
     crack( message, sessionID );
     std::cout << std::endl << "IN: " << message << std::endl;
 }
@@ -25,10 +26,6 @@ throw( FIX::DoNotSend )
 void Application::onMessage
         ( const FIX44::ExecutionReport& executionReport, const FIX::SessionID& sessionID) {
     std::cout << "Got an Execution Report" << std::endl;
-    FIX::Price price;
-    executionReport.get(price);
-    std::cout << "Price is: " + price.getString() << std::endl;
-
 }
 
 void Application::run()
