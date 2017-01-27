@@ -1,14 +1,15 @@
 #include "Application/Application.h"
-#include <fstream>
+
+using namespace std;
 
 void Application::onLogon( const FIX::SessionID& sessionID )
 {
-    std::cout << std::endl << "We are logged on - " << sessionID << std::endl;
+    cout << endl << "We are logged on - " << sessionID << endl;
 }
 
 void Application::onLogout( const FIX::SessionID& sessionID )
 {
-    std::cout << std::endl << "Logout Message - " << sessionID << std::endl;
+    cout << endl << "Logout Message - " << sessionID << endl;
 }
 
 void Application::fromApp( const FIX::Message& message, const FIX::SessionID& sessionID )
@@ -24,12 +25,9 @@ throw( FIX::DoNotSend )
 
 void Application::onMessage
         ( const FIX44::ExecutionReport& executionReport, const FIX::SessionID& sessionID) {
-    std::cout << "Got an Execution Report" << std::endl;
-    std::fstream fs;
-    fs.open ("test.txt", std::fstream::in | std::fstream::out | std::fstream::app);
-    fs << executionReport.toString();
-    fs.close();
 
+    unique_ptr<ExecutionReportHandler> execRptHandler(new ExecutionReportHandler());
+    execRptHandler->toFile(executionReport, "test.out");
 
 }
 

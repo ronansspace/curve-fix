@@ -1,15 +1,15 @@
 #ifndef CURVE_FIX_CURVE_H
 #define CURVE_FIX_CURVE_H
 
+#include <memory>
 
 #include "quickfix/Application.h"
 #include "quickfix/MessageCracker.h"
 #include "quickfix/Values.h"
 #include "quickfix/Mutex.h"
-
 #include "quickfix/fix44/ExecutionReport.h"
 
-#include <queue>
+#include "ExecutionReport/ExecutionReportHandler.h"
 
 class Application :
         public FIX::Application,
