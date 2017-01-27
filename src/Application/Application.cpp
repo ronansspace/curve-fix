@@ -26,14 +26,19 @@ throw( FIX::DoNotSend )
 void Application::onMessage
         ( const FIX44::ExecutionReport& executionReport, const FIX::SessionID& sessionID) {
 
+    cout << "Processing Execution Report - " << sessionID << endl;
+
     unique_ptr<ExecutionReportHandler> execRptHandler(new ExecutionReportHandler());
     execRptHandler->toFile(executionReport, "test.out");
+}
+
+void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
 
 }
 
 void Application::run()
 {
-    std::cout << "Running Curve FIX Client." << std::endl;
+    cout << "Running Curve FIX Client." << endl;
 
     while(true) {}
 }

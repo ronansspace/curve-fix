@@ -31,6 +31,7 @@ private:
     throw( FIX::FieldNotFound, FIX::IncorrectDataFormat, FIX::IncorrectTagValue, FIX::UnsupportedMessageType );
 
     void onMessage( const FIX44::ExecutionReport&, const FIX::SessionID& );
+    void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
 
 };
 
