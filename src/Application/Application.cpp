@@ -28,8 +28,8 @@ void Application::onMessage
 
     cout << "Processing Execution Report - " << sessionID << endl;
 
-    unique_ptr<ExecutionReportHandler> execRptHandler(new ExecutionReportHandler());
-    execRptHandler->toFile(executionReport, "test.out");
+    unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
+    execReport->toFile(executionReport, "test.out");
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {

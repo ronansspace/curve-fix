@@ -2,7 +2,7 @@
 
 using namespace std;
 
-void ExecutionReportHandler::toFile(const FIX44::ExecutionReport& execReport, const string & fileName) const {
+map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& execReport) const {
 
     map<string, string> fields;
 
@@ -31,6 +31,14 @@ void ExecutionReportHandler::toFile(const FIX44::ExecutionReport& execReport, co
     fields.insert(pair<string, string>("NoContraBrokers", getNoContraBrokers(execReport)));
     fields.insert(pair<string, string>("SecondaryExecID", getSecondaryExecID(execReport)));
 
+    return fields;
+
+}
+
+void ExecutionReportHandler::toFile(const FIX44::ExecutionReport& execReport, const string & fileName) const {
+
+    map<string, string> fields = toMap(execReport);
+
     ofstream ofile;
     ofile.open(fileName.c_str());
 
@@ -44,6 +52,27 @@ void ExecutionReportHandler::toFile(const FIX44::ExecutionReport& execReport, co
 }
 
 void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) const {
+
+    map<string, string> fields = toMap(execReport);
+
+    try {
+        sql::Driver *driver;
+        sql::Connection *con;
+        sql::Statement *stmt;
+        sql::ResultSet *res;
+
+        /* Create a connection */
+        driver = get_driver_instance();
+        con = driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7");
+        con->setSchema("cmarkets");
+        delete con;
+
+    } catch (sql::SQLException &e) {
+        cout << "# ERR: SQLException in " << __FILE__;
+        cout << "# ERR: " << e.what();
+        cout << " (MySQL error code: " << e.getErrorCode();
+        cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+    }
 
 }
 

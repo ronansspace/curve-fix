@@ -8,6 +8,13 @@
 #include "quickfix/Mutex.h"
 #include "quickfix/fix44/ExecutionReport.h"
 
+#include "mysql_connection.h"
+#include <cppconn/driver.h>
+#include <cppconn/exception.h>
+#include <cppconn/resultset.h>
+#include <cppconn/statement.h>
+
+
 class ExecutionReportHandler
 {
 public:
@@ -17,6 +24,7 @@ public:
     void toFile(const FIX44::ExecutionReport& execReport, const std::string & fileName) const;
     void toDB(const FIX44::ExecutionReport& execReport) const;
     void toConsole(const FIX44::ExecutionReport& execReport) const;
+    std::map<std::string, std::string> toMap(const FIX44::ExecutionReport& execReport) const;
 
     std::string getAccount(const FIX44::ExecutionReport& execReport) const;
     std::string getAvgPx(const FIX44::ExecutionReport& execReport) const;
