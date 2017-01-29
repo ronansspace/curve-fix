@@ -1,5 +1,5 @@
-#ifndef CURVE_FIX_CURVE_H
-#define CURVE_FIX_CURVE_H
+#ifndef CURVE_APPLICATION_H
+#define CURVE_APPLICATION_H
 
 #include <memory>
 
@@ -35,4 +35,4 @@ private:
 
 };
 
-#endif //CURVE_FIX_CURVE_H
+#endif //CURVE_APPLICATION

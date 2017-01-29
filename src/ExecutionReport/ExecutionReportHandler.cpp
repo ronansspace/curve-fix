@@ -53,25 +53,30 @@ void ExecutionReportHandler::toFile(const FIX44::ExecutionReport& execReport, co
 
 void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) const {
 
-    map<string, string> fields = toMap(execReport);
-
     try {
-        sql::Driver *driver;
-        sql::Connection *con;
-        sql::Statement *stmt;
-        sql::ResultSet *res;
+        map<string, string> fields = toMap(execReport);
 
-        /* Create a connection */
-        driver = get_driver_instance();
-        con = driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7");
+        sql::Driver *driver = get_driver_instance();
+
+        unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7"));
         con->setSchema("cmarkets");
-        delete con;
+
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+
+        int dbCol = 1;
+        for( auto it=fields.begin(); it!=fields.end(); ++it) {
+            pstmt->setString(dbCol++, it->second);
+        }
+
+        pstmt->executeUpdate();
 
     } catch (sql::SQLException &e) {
         cout << "# ERR: SQLException in " << __FILE__;
         cout << "# ERR: " << e.what();
         cout << " (MySQL error code: " << e.getErrorCode();
         cout << ", SQLState: " << e.getSQLState() << " )" << endl;
+    } catch (exception& e) {
+        cout << e.what() << endl;
     }
 
 }
