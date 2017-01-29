@@ -1,0 +1,15 @@
+cmake_minimum_required(VERSION 3.5)
+project(curve_fix)
+
+set(CMAKE_CXX_STANDARD 11)
+
+set ( PROJECT_LINK_LIBS quickfix mysqlcppconn)
+link_directories( /usr/local/lib /usr/local/share/mysql/mysql-connector-c++-1.1.8/lib)
+
+include_directories(include /usr/local/Cellar/boost/1.63.0/include /usr/local/include/quickfix /usr/local/share/mysql/mysql-connector-c++-1.1.8/include)
+
+set(SOURCES src/main.cpp  src/ExecutionReport/ExecutionReportHandler.cpp src/Application/Application.cpp)
+
+add_executable(curve_fix ${SOURCES})
+
+target_link_libraries(curve_fix ${PROJECT_LINK_LIBS} )
