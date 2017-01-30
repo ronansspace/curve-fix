@@ -30,6 +30,7 @@ map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& 
     fields.insert(pair<string, string>("EffectiveTime", getEffectiveTime(execReport)));
     fields.insert(pair<string, string>("NoContraBrokers", getNoContraBrokers(execReport)));
     fields.insert(pair<string, string>("SecondaryExecID", getSecondaryExecID(execReport)));
+    fields.insert(pair<string, string>("SourceSystem", "TraderTools"));
 
     return fields;
 
