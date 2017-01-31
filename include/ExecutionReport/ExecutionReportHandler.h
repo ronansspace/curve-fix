@@ -27,6 +27,7 @@ public:
     std::map<std::string, std::string> toMap(const FIX44::ExecutionReport& execReport) const;
 
     std::string getAccountStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getSymbolStr(const FIX44::ExecutionReport& execReport) const;
     std::string getAvgPxStr(const FIX44::ExecutionReport& execReport) const;
     std::string getClOrdIDStr(const FIX44::ExecutionReport& execReport) const;
     std::string getCumQtyStr(const FIX44::ExecutionReport& execReport) const;

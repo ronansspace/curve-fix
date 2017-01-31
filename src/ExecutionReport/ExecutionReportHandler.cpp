@@ -7,6 +7,7 @@ map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& 
     map<string, string> fields;
 
     fields.insert(pair<string, string>("Account", getAccountStr(execReport)));
+    fields.insert(pair<string, string>("Symbol", getSymbolStr(execReport)));
     fields.insert(pair<string, string>("AvgPx", getAvgPxStr(execReport)));
     fields.insert(pair<string, string>("ClOrdID", getClOrdIDStr(execReport)));
     fields.insert(pair<string, string>("CumQty", getCumQtyStr(execReport)));
@@ -108,6 +109,11 @@ void ExecutionReportHandler::toConsole(const FIX44::ExecutionReport& execReport)
 string ExecutionReportHandler::getAccountStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Account account;
     return execReport.get(account);
+}
+
+string ExecutionReportHandler::getSymbolStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::Symbol symbol;
+    return execReport.get(symbol);
 }
 
 string ExecutionReportHandler::getAvgPxStr(const FIX44::ExecutionReport& execReport) const {
