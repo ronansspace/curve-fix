@@ -153,7 +153,7 @@ string ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport
 
 string ExecutionReportHandler::getSide(const FIX44::ExecutionReport& execReport) const {
     FIX::Side side;
-    return execReport.get(side).getFixString()
+    return execReport.get(side).getFixString();
 }
 
 string ExecutionReportHandler::getTimeInForce(const FIX44::ExecutionReport& execReport) const {
