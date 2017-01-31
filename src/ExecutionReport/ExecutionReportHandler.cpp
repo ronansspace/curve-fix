@@ -143,7 +143,7 @@ string ExecutionReportHandler::getOrdStatus(const FIX44::ExecutionReport& execRe
 
 string ExecutionReportHandler::getOrdType(const FIX44::ExecutionReport& execReport) const {
     FIX::OrdType ordType;
-    return execReport.get(ordType).getString();
+    return execReport.get(ordType).getFixString();
 }
 
 string ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport) const {
@@ -153,7 +153,7 @@ string ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport
 
 string ExecutionReportHandler::getSide(const FIX44::ExecutionReport& execReport) const {
     FIX::Side side;
-    return execReport.get(side).getString();
+    return execReport.get(side).getFixString()
 }
 
 string ExecutionReportHandler::getTimeInForce(const FIX44::ExecutionReport& execReport) const {
