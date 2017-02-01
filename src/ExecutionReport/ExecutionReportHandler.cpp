@@ -228,7 +228,7 @@ string ExecutionReportHandler::getOrdTypeStr(const FIX44::ExecutionReport& execR
 
 string ExecutionReportHandler::getPriceStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Price price;
-    return execReport.get(price).getString();
+    return execReport.getIfSet(price) ? execReport.get(price).getString() : "";
 }
 
 string ExecutionReportHandler::getSideStr(const FIX44::ExecutionReport& execReport) const {
@@ -261,7 +261,27 @@ string ExecutionReportHandler::getSideStr(const FIX44::ExecutionReport& execRepo
 
 string ExecutionReportHandler::getTimeInForceStr(const FIX44::ExecutionReport& execReport) const {
     FIX::TimeInForce timeInForce;
-    return execReport.get(timeInForce).getString();
+
+    if(!execReport.getIfSet(timeInForce)) {
+        return "Day";
+    }
+
+    string retStr = "Error";
+
+    switch (execReport.get(timeInForce).getValue()) {
+        case '0': retStr = "Day"; break;
+        case '1': retStr = "Good Till Cancel"; break;
+        case '2': retStr = "At the Opening"; break;
+        case '3': retStr = "Immediate or Cancel"; break;
+        case '4': retStr = "Fill or Kill"; break;
+        case '5': retStr = "Good Till Crossing"; break;
+        case '6': retStr = "Good Till Date"; break;
+        case '7': retStr = "At the Close"; break;
+        default: retStr = "Error";
+    }
+
+    return retStr;
+
 }
 
 string ExecutionReportHandler::getTransactTimeStr(const FIX44::ExecutionReport& execReport) const {
@@ -358,7 +378,7 @@ double ExecutionReportHandler::getLastQty(const FIX44::ExecutionReport& execRepo
 
 double ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport) const {
     FIX::Price price;
-    return execReport.get(price).getValue();
+    return execReport.getIfSet(price) ? execReport.get(price).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getLeavesQty(const FIX44::ExecutionReport& execReport) const {
@@ -370,6 +390,7 @@ double ExecutionReportHandler::getOrderQty(const FIX44::ExecutionReport& execRep
     FIX::OrderQty orderQty;
     return execReport.get(orderQty).getValue();
 }
+
 
 
 
