@@ -109,63 +109,67 @@ void ExecutionReportHandler::toConsole(const FIX44::ExecutionReport& execReport)
 
 string ExecutionReportHandler::getAccountStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Account account;
-    return execReport.get(account);
+    return execReport.getIfSet(account) ? execReport.get(account).getString() : "";
 }
 
 string ExecutionReportHandler::getSymbolStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Symbol symbol;
-    return execReport.get(symbol);
+    return execReport.getIfSet(symbol) ? execReport.get(symbol).getString() : "";
 }
 
 string ExecutionReportHandler::getAvgPxStr(const FIX44::ExecutionReport& execReport) const {
     FIX::AvgPx avgPx;
-    return execReport.get(avgPx).getString();
+    return execReport.getIfSet(avgPx) ? execReport.get(avgPx).getString() : "";
 }
 
 string ExecutionReportHandler::getClOrdIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::ClOrdID clOrdID;
-    return execReport.get(clOrdID);
+    return execReport.getIfSet(clOrdID) ? execReport.get(clOrdID).getString() : "";
 }
 
 string ExecutionReportHandler::getCumQtyStr(const FIX44::ExecutionReport& execReport) const {
     FIX::CumQty cumQty;
-    return execReport.get(cumQty).getString();
+    return execReport.getIfSet(cumQty) ? execReport.get(cumQty).getString() : "";
 }
 
 string ExecutionReportHandler::getCurrencyStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Currency currency;
-    return execReport.get(currency);
+    return execReport.getIfSet(currency) ? execReport.get(currency).getString() : "";
 }
 
 string ExecutionReportHandler::getExecIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::ExecID execID;
-    return execReport.get(execID);
+    return execReport.getIfSet(execID) ? execReport.get(execID).getString() : "";
 }
 
 string ExecutionReportHandler::getLastPxStr(const FIX44::ExecutionReport& execReport) const {
     FIX::LastPx lastPx;
-    return execReport.get(lastPx).getString();
+    return execReport.getIfSet(lastPx) ? execReport.get(lastPx).getString() : "";
 }
 
 string ExecutionReportHandler::getLastQtyStr(const FIX44::ExecutionReport& execReport) const {
     FIX::LastQty lastQty;
-    return execReport.get(lastQty).getString();
+    return execReport.getIfSet(lastQty) ? execReport.get(lastQty).getString() : "";
 }
 
 string ExecutionReportHandler::getOrderIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::OrderID orderID;
-    return execReport.get(orderID);
+    return execReport.getIfSet(orderID) ? execReport.get(orderID).getString() : "";
 }
 
 string ExecutionReportHandler::getOrderQtyStr(const FIX44::ExecutionReport& execReport) const {
     FIX::OrderQty orderQty;
-    return execReport.get(orderQty).getString();
+    return execReport.getIfSet(orderQty) ? execReport.get(orderQty).getString() : "";
 }
 
 string ExecutionReportHandler::getOrdStatusStr(const FIX44::ExecutionReport& execReport) const {
     FIX::OrdStatus ordStatus;
 
-    string ret = "Error";
+    string ret;
+
+    if(!execReport.getIfSet(ordStatus)) {
+        return "";
+    }
 
     switch (execReport.get(ordStatus).getValue()) {
         case '0': ret = "New"; break;
@@ -183,7 +187,7 @@ string ExecutionReportHandler::getOrdStatusStr(const FIX44::ExecutionReport& exe
         case 'C': ret = "Expired"; break;
         case 'D': ret = "Accepted for bidding"; break;
         case 'E': ret = "Pending Replace"; break;
-        default: ret = "Error";
+        default: ret = "NoOrdStatus";
     }
 
     return ret;
@@ -193,7 +197,11 @@ string ExecutionReportHandler::getOrdStatusStr(const FIX44::ExecutionReport& exe
 string ExecutionReportHandler::getOrdTypeStr(const FIX44::ExecutionReport& execReport) const {
     FIX::OrdType ordType;
 
-    string ret = "Error";
+    string ret;
+
+    if(!execReport.getIfSet(ordType)) {
+        return "";
+    }
 
     switch (execReport.get(ordType).getValue()) {
         case '1': ret = "Market"; break;
@@ -219,7 +227,7 @@ string ExecutionReportHandler::getOrdTypeStr(const FIX44::ExecutionReport& execR
         case 'L': ret = "Previous Fund Valuation Point"; break;
         case 'M': ret = "Next Fund Valuation Point"; break;
         case 'P': ret = "Pegged"; break;
-        default: ret = "Error";
+        default: ret = "NoOrdType";
     }
 
     return ret;
@@ -234,7 +242,11 @@ string ExecutionReportHandler::getPriceStr(const FIX44::ExecutionReport& execRep
 string ExecutionReportHandler::getSideStr(const FIX44::ExecutionReport& execReport) const {
     FIX::Side side;
 
-    string ret = "Error";
+    string ret;
+
+    if(!execReport.getIfSet(side)) {
+        return "";
+    }
 
     switch (execReport.get(side).getValue()) {
         case '1': ret = "Buy"; break;
@@ -253,6 +265,7 @@ string ExecutionReportHandler::getSideStr(const FIX44::ExecutionReport& execRepo
         case 'E': ret = "Redeem"; break;
         case 'F': ret = "Lend"; break;
         case 'G': ret = "Borrow"; break;
+        default: ret = "NoSide";
     }
 
     return ret;
@@ -266,7 +279,7 @@ string ExecutionReportHandler::getTimeInForceStr(const FIX44::ExecutionReport& e
         return "Day";
     }
 
-    string retStr = "Error";
+    string retStr;
 
     switch (execReport.get(timeInForce).getValue()) {
         case '0': retStr = "Day"; break;
@@ -277,7 +290,7 @@ string ExecutionReportHandler::getTimeInForceStr(const FIX44::ExecutionReport& e
         case '5': retStr = "Good Till Crossing"; break;
         case '6': retStr = "Good Till Date"; break;
         case '7': retStr = "At the Close"; break;
-        default: retStr = "Error";
+        default: retStr = "NoTimeInForce";
     }
 
     return retStr;
@@ -286,94 +299,98 @@ string ExecutionReportHandler::getTimeInForceStr(const FIX44::ExecutionReport& e
 
 string ExecutionReportHandler::getTransactTimeStr(const FIX44::ExecutionReport& execReport) const {
     FIX::TransactTime transactTime;
-    return execReport.get(transactTime).getString();
+    return execReport.getIfSet(transactTime) ? execReport.get(transactTime).getString() : "";
 }
 
 string ExecutionReportHandler::getSettlDateStr(const FIX44::ExecutionReport& execReport) const {
     FIX::SettlDate settlDate;
-    return execReport.get(settlDate);
+    return execReport.getIfSet(settlDate) ? execReport.get(settlDate).getString() : "";
 }
 
 string ExecutionReportHandler::getListIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::ListID listID;
-    return execReport.get(listID);
+    return execReport.getIfSet(listID) ? execReport.get(listID).getString() : "";
 }
 
 string ExecutionReportHandler::getTradeDateStr(const FIX44::ExecutionReport& execReport) const {
     FIX::TradeDate tradeDate;
-    return execReport.get(tradeDate);
+    return execReport.getIfSet(tradeDate) ? execReport.get(tradeDate).getString() : "";
 }
 
 string ExecutionReportHandler::getExecTypeStr(const FIX44::ExecutionReport& execReport) const {
     FIX::ExecType execType;
 
-    string execTypeStr = "Error";
+    string ret;
 
-    switch (execReport.get(execType).getValue()) {
-        case '0': execTypeStr = "New"; break;
-        case '1': execTypeStr = "Partial fill"; break;
-        case '2': execTypeStr = "Fill"; break;
-        case '3': execTypeStr = "Done for day"; break;
-        case '4': execTypeStr = "Canceled"; break;
-        case '5': execTypeStr = "Replace"; break;
-        case '6': execTypeStr = "Pending Cancel"; break;
-        case '7': execTypeStr = "Stopped"; break;
-        case '8': execTypeStr = "Rejected"; break;
-        case '9': execTypeStr = "Suspended"; break;
-        case 'A': execTypeStr = "Pending New"; break;
-        case 'B': execTypeStr = "Calculated"; break;
-        case 'C': execTypeStr = "Expired"; break;
-        case 'D': execTypeStr = "Restated"; break;
-        case 'E': execTypeStr = "Pending Replace"; break;
-        case 'F': execTypeStr = "Trade"; break;
-        case 'G': execTypeStr = "Trade Correct"; break;
-        case 'H': execTypeStr = "Trade Cancel"; break;
-        case 'I': execTypeStr = "Order Status"; break;
-        default: execTypeStr = "Error";
+    if(!execReport.getIfSet(execType)) {
+        return "";
     }
 
-    return execTypeStr;
+    switch (execReport.get(execType).getValue()) {
+        case '0': ret = "New"; break;
+        case '1': ret = "Partial fill"; break;
+        case '2': ret = "Fill"; break;
+        case '3': ret = "Done for day"; break;
+        case '4': ret = "Canceled"; break;
+        case '5': ret = "Replace"; break;
+        case '6': ret = "Pending Cancel"; break;
+        case '7': ret = "Stopped"; break;
+        case '8': ret = "Rejected"; break;
+        case '9': ret = "Suspended"; break;
+        case 'A': ret = "Pending New"; break;
+        case 'B': ret = "Calculated"; break;
+        case 'C': ret = "Expired"; break;
+        case 'D': ret = "Restated"; break;
+        case 'E': ret = "Pending Replace"; break;
+        case 'F': ret = "Trade"; break;
+        case 'G': ret = "Trade Correct"; break;
+        case 'H': ret = "Trade Cancel"; break;
+        case 'I': ret = "Order Status"; break;
+        default: ret = "NoExecType";
+    }
+
+    return ret;
 
 }
 
 string ExecutionReportHandler::getLeavesQtyStr(const FIX44::ExecutionReport& execReport) const {
     FIX::LeavesQty leavesQty;
-    return execReport.get(leavesQty).getString();
+    return execReport.getIfSet(leavesQty) ? execReport.get(leavesQty).getString() : "";
 }
 
 string ExecutionReportHandler::getEffectiveTimeStr(const FIX44::ExecutionReport& execReport) const {
     FIX::EffectiveTime effectiveTime;
-    return execReport.get(effectiveTime).getString();
+    return execReport.getIfSet(effectiveTime) ? execReport.get(effectiveTime).getString() : "";
 }
 
 string ExecutionReportHandler::getNoContraBrokersStr(const FIX44::ExecutionReport& execReport) const {
     FIX::NoContraBrokers noContraBrokers;
-    return execReport.get(noContraBrokers).getString();
+    return execReport.getIfSet(noContraBrokers) ? execReport.get(noContraBrokers).getString() : "";
 }
 
 string ExecutionReportHandler::getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::SecondaryExecID secondaryExecID;
-    return execReport.get(secondaryExecID);
+    return execReport.getIfSet(secondaryExecID) ? execReport.get(secondaryExecID).getString() : "";
 }
 
 double ExecutionReportHandler::getAvgPx(const FIX44::ExecutionReport& execReport) const {
     FIX::AvgPx avgPx;
-    return execReport.get(avgPx).getValue();
+    return execReport.getIfSet(avgPx) ? execReport.get(avgPx).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getCumQty(const FIX44::ExecutionReport& execReport) const {
     FIX::CumQty cumQty;
-    return execReport.get(cumQty).getValue();
+    return execReport.getIfSet(cumQty) ? execReport.get(cumQty).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getLastPx(const FIX44::ExecutionReport& execReport) const {
     FIX::LastPx lastPx;
-    return execReport.get(lastPx).getValue();
+    return execReport.getIfSet(lastPx) ? execReport.get(lastPx).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getLastQty(const FIX44::ExecutionReport& execReport) const {
     FIX::LastQty lastQty;
-    return execReport.get(lastQty).getValue();
+    return execReport.getIfSet(lastQty) ? execReport.get(lastQty).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport) const {
@@ -383,12 +400,12 @@ double ExecutionReportHandler::getPrice(const FIX44::ExecutionReport& execReport
 
 double ExecutionReportHandler::getLeavesQty(const FIX44::ExecutionReport& execReport) const {
     FIX::LeavesQty leavesQty;
-    return execReport.get(leavesQty).getValue();
+    return execReport.getIfSet(leavesQty) ? execReport.get(leavesQty).getValue() : 0.;
 }
 
 double ExecutionReportHandler::getOrderQty(const FIX44::ExecutionReport& execReport) const {
     FIX::OrderQty orderQty;
-    return execReport.get(orderQty).getValue();
+    return execReport.getIfSet(orderQty) ? execReport.get(orderQty).getValue() : 0.;
 }
 
 
