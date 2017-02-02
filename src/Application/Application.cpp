@@ -30,6 +30,7 @@ void Application::onMessage
 
     unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
     execReport->toFile(executionReport, "test.out");
+    execReport->toDB(executionReport);
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
