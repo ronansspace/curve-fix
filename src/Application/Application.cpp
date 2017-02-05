@@ -41,5 +41,25 @@ void Application::run()
 {
     cout << "Running Curve FIX Client." << endl;
 
+    FIX::MDReqID mdReqID( "MARKETDATAID" );
+    FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT );
+    FIX::MarketDepth marketDepth( 0 );
+
+    FIX44::MarketDataRequest::NoMDEntryTypes marketDataEntryGroup;
+    FIX::MDEntryType mdEntryType( FIX::MDEntryType_BID );
+    marketDataEntryGroup.set( mdEntryType );
+
+    FIX44::MarketDataRequest::NoRelatedSym symbolGroup;
+    FIX::Symbol symbol( "EUR/USD" );
+    symbolGroup.set( symbol );
+
+    FIX44::MarketDataRequest message( mdReqID, subType, marketDepth );
+    message.addGroup( marketDataEntryGroup );
+    message.addGroup( symbolGroup );
+
+    std::cout << message.toXML() << std::endl;
+    std::cout << message.toString() << std::endl;
+
+
     while(true) {}
 }

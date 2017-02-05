@@ -8,6 +8,7 @@
 #include "quickfix/Values.h"
 #include "quickfix/Mutex.h"
 #include "quickfix/fix44/ExecutionReport.h"
+#include "quickfix/fix44/MarketDataRequest.h"
 
 #include "ExecutionReport/ExecutionReportHandler.h"
 
