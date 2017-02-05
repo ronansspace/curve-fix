@@ -44,9 +44,15 @@ void Application::onMessage
     message.addGroup( marketDataEntryGroup );
     message.addGroup( symbolGroup );
 
+    FIX44::Header header = message.getHeader();
+
+    header.setField(FIX::SenderCompID("FIXUAT16-ORD"));
+    header.setField(FIX::TargetCompID("TTUAT-ORD"));
+
     std::cout << message.toXML() << std::endl;
     std::cout << message.toString() << std::endl;
 
+    FIX::Session::sendToTarget(message);
 
     unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
     execReport->toFile(executionReport, "test.out");
