@@ -33,6 +33,7 @@ private:
 
     void onMessage( const FIX44::ExecutionReport&, const FIX::SessionID& );
     void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
+    void onMessage( const FIX44::MarketDataRequest&, const FIX::SessionID& );
 
 };
 

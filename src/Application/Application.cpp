@@ -28,19 +28,6 @@ void Application::onMessage
 
     cout << "Processing Execution Report - " << sessionID << endl;
 
-    unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
-    execReport->toFile(executionReport, "test.out");
-    execReport->toDB(executionReport);
-}
-
-void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
-
-}
-
-void Application::run()
-{
-    cout << "Running Curve FIX Client." << endl;
-
     FIX::MDReqID mdReqID( "MARKETDATAID" );
     FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT );
     FIX::MarketDepth marketDepth( 0 );
@@ -60,6 +47,27 @@ void Application::run()
     std::cout << message.toXML() << std::endl;
     std::cout << message.toString() << std::endl;
 
+
+    unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
+    execReport->toFile(executionReport, "test.out");
+    execReport->toDB(executionReport);
+}
+
+void Application::onMessage
+        ( const FIX44::MarketDataRequest& marketData, const FIX::SessionID& sessionID) {
+
+    cout << "Processing MarketData - " << sessionID << endl;
+
+    cout << marketData.toString() << endl;
+}
+
+void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
+
+}
+
+void Application::run()
+{
+    cout << "Running Curve FIX Client." << endl;
 
     while(true) {}
 }
