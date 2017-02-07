@@ -8,6 +8,7 @@
 #include "quickfix/Values.h"
 #include "quickfix/Mutex.h"
 #include "quickfix/fix44/ExecutionReport.h"
+#include "quickfix/fix44/NewOrderSingle.h"
 #include "quickfix/fix44/MarketDataRequest.h"
 
 #include "ExecutionReport/ExecutionReportHandler.h"
@@ -34,6 +35,7 @@ private:
     void onMessage( const FIX44::ExecutionReport&, const FIX::SessionID& );
     void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
     void onMessage( const FIX44::MarketDataRequest&, const FIX::SessionID& );
+    void onMessage( const FIX44::NewOrderSingle&, const FIX::SessionID& );
 
 };
 

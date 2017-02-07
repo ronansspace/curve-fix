@@ -18,7 +18,8 @@ void Application::onLogon( const FIX::SessionID& sessionID )
     FIX::Symbol symbol( "EUR/USD" );
     symbolGroup.set( symbol );
 
-    FIX44::MarketDataRequest message( mdReqID, subType, marketDepth );
+    FIX44::MarketDataRequest message( mdReqID, subType, marketDepth);
+    message.setField(FIX::MDUpdateType(0));
     message.addGroup( marketDataEntryGroup );
     message.addGroup( symbolGroup );
 
@@ -66,6 +67,13 @@ void Application::onMessage
     cout << "Processing MarketData - " << sessionID << endl;
 
     cout << marketData.toString() << endl;
+}
+
+void Application::onMessage
+        ( const FIX44::NewOrderSingle& orderSingle, const FIX::SessionID& sessionID) {
+
+    cout << "Processing New Order Single - " << sessionID << endl;
+    cout << orderSingle.toString() << endl;
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
