@@ -7,7 +7,7 @@ void Application::onLogon( const FIX::SessionID& sessionID )
     cout << endl << "We are logged on - " << sessionID << endl;
 
     FIX::MDReqID mdReqID( "MARKETDATAID" );
-    FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT );
+    FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES );
     FIX::MarketDepth marketDepth( 0 );
 
     FIX44::MarketDataRequest::NoMDEntryTypes marketDataEntryGroup;
@@ -24,9 +24,6 @@ void Application::onLogon( const FIX::SessionID& sessionID )
     message.addGroup( symbolGroup );
 
     FIX44::Header header = message.getHeader();
-
-    header.setField(FIX::SenderCompID("FIXUAT16-MD"));
-    header.setField(FIX::TargetCompID("TTUAT-MD"));
 
     std::cout << message.toXML() << std::endl;
     std::cout << message.toString() << std::endl;
@@ -64,8 +61,13 @@ void Application::onMessage
 void Application::onMessage
         ( const FIX44::MarketDataRequest& marketData, const FIX::SessionID& sessionID) {
 
-    cout << "Processing MarketData - " << sessionID << endl;
+    cout << "Processing MarketData Request - " << sessionID << endl;
 
+    cout << marketData.toString() << endl;
+}
+
+void Application::onMessage( const FIX44::MarketDataSnapshotFullRefresh& marketData, const FIX::SessionID& sessionID) {
+    cout << "Processing MarketData Snapshot Full Refresh- " << sessionID << endl;
     cout << marketData.toString() << endl;
 }
 
