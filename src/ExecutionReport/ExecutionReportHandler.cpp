@@ -32,6 +32,7 @@ map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& 
     fields.insert(pair<string, string>("NoContraBrokers", getNoContraBrokersStr(execReport)));
     fields.insert(pair<string, string>("SecondaryExecID", getSecondaryExecIDStr(execReport)));
     fields.insert(pair<string, string>("PartyID", getPartyIDStr(execReport)));
+    fields.insert(pair<string, string>("ContraBroker", getContraBrokerStr(execReport)));
     fields.insert(pair<string, string>("SourceSystem", "TraderTools"));
 
     return fields;
@@ -62,7 +63,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7"));
         con->setSchema("cmarkets");
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
         pstmt->setString(1, getAccountStr(execReport));
         pstmt->setString(2, getSymbolStr(execReport));
@@ -90,7 +91,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         pstmt->setString(24, getNoContraBrokersStr(execReport));
         pstmt->setString(25, getSecondaryExecIDStr(execReport));
         pstmt->setString(26, getPartyIDStr(execReport));
-        pstmt->setString(27, "TraderTools");
+        pstmt->setString(27, getContraBrokerStr(execReport));
+        pstmt->setString(28, "TraderTools");
 
         pstmt->executeUpdate();
 
@@ -385,6 +387,19 @@ string ExecutionReportHandler::getPartyIDStr(const FIX44::ExecutionReport& execR
 
     execReport.getGroup(1, group);
     return group.getIfSet(partyID) ? group.get(partyID).getValue() : "";
+
+}
+
+string ExecutionReportHandler::getContraBrokerStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::NoContraBrokers noContraBrokers;
+    if( !execReport.get(noContraBrokers).getValue() )
+        return "";
+
+    FIX44::ExecutionReport::NoContraBrokers group;
+    FIX::ContraBroker contraBroker;
+
+    execReport.getGroup(1, group);
+    return group.getIfSet(contraBroker) ? group.get(contraBroker).getValue() : "";
 
 }
 
