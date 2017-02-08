@@ -31,6 +31,7 @@ map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& 
     fields.insert(pair<string, string>("EffectiveTime", getEffectiveTimeStr(execReport)));
     fields.insert(pair<string, string>("NoContraBrokers", getNoContraBrokersStr(execReport)));
     fields.insert(pair<string, string>("SecondaryExecID", getSecondaryExecIDStr(execReport)));
+    fields.insert(pair<string, string>("PartyID", getPartyIDStr(execReport)));
     fields.insert(pair<string, string>("SourceSystem", "TraderTools"));
 
     return fields;
@@ -88,7 +89,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         pstmt->setString(23, getEffectiveTimeStr(execReport));
         pstmt->setString(24, getNoContraBrokersStr(execReport));
         pstmt->setString(25, getSecondaryExecIDStr(execReport));
-        pstmt->setString(26, "TraderTools");
+        pstmt->setString(26, getPartyIDStr(execReport));
+        pstmt->setString(27, "TraderTools");
 
         pstmt->executeUpdate();
 
@@ -371,6 +373,19 @@ string ExecutionReportHandler::getNoContraBrokersStr(const FIX44::ExecutionRepor
 string ExecutionReportHandler::getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::SecondaryExecID secondaryExecID;
     return execReport.getIfSet(secondaryExecID) ? execReport.get(secondaryExecID).getString() : "";
+}
+
+string ExecutionReportHandler::getPartyIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::NoPartyIDs noPartyIDs;
+    if( !execReport.get(noPartyIDs).getValue() )
+        return "";
+
+    FIX44::ExecutionReport::NoPartyIDs group;
+    FIX::PartyID partyID;
+
+    execReport.getGroup(1, group);
+    return group.getIfSet(partyID) ? group.get(partyID).getValue() : "";
+
 }
 
 double ExecutionReportHandler::getAvgPx(const FIX44::ExecutionReport& execReport) const {

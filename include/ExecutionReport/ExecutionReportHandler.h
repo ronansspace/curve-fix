@@ -51,6 +51,7 @@ public:
     std::string getEffectiveTimeStr(const FIX44::ExecutionReport& execReport) const;
     std::string getNoContraBrokersStr(const FIX44::ExecutionReport& execReport) const;
     std::string getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getPartyIDStr(const FIX44::ExecutionReport& execReport) const;
 
     double getAvgPx(const FIX44::ExecutionReport& execReport) const;
     double getCumQty(const FIX44::ExecutionReport& execReport) const;
