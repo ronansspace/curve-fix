@@ -84,13 +84,6 @@ void Application::onMessage( const FIX44::MarketDataSnapshotFullRefresh& marketD
     cout << marketData.toXML() << endl;
 }
 
-void Application::onMessage
-        ( const FIX44::NewOrderSingle& orderSingle, const FIX::SessionID& sessionID) {
-
-    cout << "Processing New Order Single - " << sessionID << endl;
-    cout << orderSingle.toString() << endl;
-}
-
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
 
 }
