@@ -4,10 +4,10 @@
 
 int main( int argc, char** argv )
 {
-    if ( argc != 2 )
+    if ( argc != 3 )
     {
         std::cout << "usage: " << argv[ 0 ]
-                  << " FILE." << std::endl;
+                  << " QuickFIX Settings File." << std::endl;
         return 0;
     }
     std::string file = argv[ 1 ];
@@ -15,12 +15,10 @@ int main( int argc, char** argv )
     try
     {
         FIX::SessionSettings settings( file );
-
         Application application;
         FIX::FileStoreFactory storeFactory( settings );
         FIX::ScreenLogFactory logFactory( settings );
         FIX::SocketInitiator initiator( application, storeFactory, settings, logFactory );
-
         initiator.start();
         application.run();
         initiator.stop();
