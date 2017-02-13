@@ -89,7 +89,8 @@ void Application::run()
     cout << "Running Curve FIX Client." << endl;
 
     while(!isLoggedOn) {
-        cout << "Waiting for Logon." << endl;
+        cout << "Waiting for successful Login." << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(10));
     }
 
     while(true) {}
