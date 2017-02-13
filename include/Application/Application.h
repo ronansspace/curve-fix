@@ -20,6 +20,8 @@ public:
     void run();
 
 private:
+    bool isLoggedOn;
+
     void onCreate( const FIX::SessionID& ) {}
     void onLogon( const FIX::SessionID& sessionID );
     void onLogout( const FIX::SessionID& sessionID );
