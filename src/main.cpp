@@ -1,6 +1,7 @@
 #include "quickfix/FileStore.h"
 #include "quickfix/SocketInitiator.h"
 #include "Application/Application.h"
+#include <sstream>
 
 int main( int argc, char** argv )
 {
@@ -12,8 +13,11 @@ int main( int argc, char** argv )
         return 0;
     }
     std::string file = argv[ 1 ];
-    bool isMarketSession = argv[ 2 ];
-    std::cout << isMarketSession << std::endl;
+    std::stringstream ss(argv[2]);
+    bool isMarketSession;
+    if(!(ss >> std::boolalpha >> isMarketSession)) {
+        isMarketSession = false;
+    }
 
     try
     {
