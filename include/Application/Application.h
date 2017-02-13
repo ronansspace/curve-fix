@@ -21,9 +21,11 @@ class Application :
 public:
     void run();
     void setIsLoggedOn(bool i) {isLoggedOn = i;}
+    void setIsMarketSession(bool i) {isMarketSession = i;}
 
 private:
     bool isLoggedOn;
+    bool isMarketSession;
 
     void onCreate( const FIX::SessionID& ) {}
     void onLogon( const FIX::SessionID& sessionID );
