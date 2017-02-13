@@ -26,8 +26,9 @@ public:
 private:
     bool isLoggedOn;
     bool isMarketSession;
+    FIX::SessionID sessionID;
 
-    void onCreate( const FIX::SessionID& ) {}
+    void onCreate( const FIX::SessionID& i ) { sessionID = i;}
     void onLogon( const FIX::SessionID& sessionID );
     void onLogout( const FIX::SessionID& sessionID );
     void toAdmin( FIX::Message&, const FIX::SessionID& ) {}
@@ -42,6 +43,8 @@ private:
     void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
     void onMessage( const FIX44::MarketDataRequest&, const FIX::SessionID& );
     void onMessage( const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID& );
+
+    void sendMarketDataRequest(const std::string& iCcyPair);
 
 };
 
