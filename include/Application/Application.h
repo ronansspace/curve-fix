@@ -18,6 +18,7 @@ class Application :
 {
 public:
     void run();
+    void setIsLoggedOn(bool i) {isLoggedOn = i;}
 
 private:
     bool isLoggedOn;
