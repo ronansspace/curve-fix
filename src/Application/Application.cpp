@@ -91,7 +91,7 @@ void Application::run()
     if(isMarketSession) {
         while(!isLoggedOn) {
             cout << "Waiting for successful Login." << endl;
-            std::this_thread::sleep_for(std::chrono::milliseconds(10));
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
     }
 

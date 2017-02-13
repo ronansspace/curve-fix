@@ -13,6 +13,7 @@ int main( int argc, char** argv )
     }
     std::string file = argv[ 1 ];
     bool isMarketSession = argv[ 2 ];
+    std::cout << isMarketSession << std::endl;
 
     try
     {
