@@ -4,7 +4,7 @@
 
 int main( int argc, char** argv )
 {
-    if ( argc != 3 )
+    if ( argc != 2 )
     {
         std::cout << "usage: " << argv[ 0 ]
                   << " QuickFIX Settings File." << std::endl;
