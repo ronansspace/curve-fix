@@ -38,9 +38,12 @@ void Application::onMessage
     cout << "Processing MarketData Request - " << sessionID << endl;
 }
 
-void Application::onMessage( const FIX44::MarketDataSnapshotFullRefresh& marketData, const FIX::SessionID& sessionID) {
+void Application::onMessage
+        ( const FIX44::MarketDataSnapshotFullRefresh& marketData, const FIX::SessionID& sessionID) {
     cout << "Processing MarketData Snapshot Full Refresh- " << sessionID << endl;
-    cout << marketData.toXML() << endl;
+
+    unique_ptr<MarketDataReportHandler> mktReport(new MarketDataReportHandler());
+    mktReport->toDB(marketData);
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {

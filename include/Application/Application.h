@@ -13,6 +13,7 @@
 #include "quickfix/fix44/MarketDataRequest.h"
 #include "quickfix/fix44/MarketDataSnapshotFullRefresh.h"
 #include "ExecutionReport/ExecutionReportHandler.h"
+#include "MarketDataReport/MarketDataReportHandler.h"
 
 class Application :
         public FIX::Application,

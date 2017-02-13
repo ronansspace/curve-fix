@@ -8,7 +8,7 @@ link_directories( /usr/local/lib /usr/local/share/mysql/mysql-connector-c++-1.1.
 
 include_directories(include /usr/local/Cellar/boost/1.63.0/include /usr/local/include/quickfix /usr/local/share/mysql/mysql-connector-c++-1.1.8/include)
 
-set(SOURCES src/main.cpp  src/ExecutionReport/ExecutionReportHandler.cpp src/Application/Application.cpp)
+set(SOURCES src/main.cpp src/ExecutionReport/ExecutionReportHandler.cpp src/MarketDataReport/MarketDataReportHandler.cpp src/Application/Application.cpp )
 
 add_executable(curve_fix ${SOURCES})
 
