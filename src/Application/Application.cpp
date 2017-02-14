@@ -115,6 +115,7 @@ void Application::run()
 
         while(!ccyPairs.empty()) {
             cout << "Waiting for market data requests to be filled." << endl;
+            cout << ccyPairs.size() << endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         } // Loop until all ccy pairs have been updated.
 
