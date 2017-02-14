@@ -79,21 +79,22 @@ void Application::run()
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
         }
 
-        sendMarketDataRequest("CLP/USD");
-        sendMarketDataRequest("APD/USD");
-        sendMarketDataRequest("USD/TRY");
-        sendMarketDataRequest("USD/JPY");
-        sendMarketDataRequest("NZD/USD");
-        sendMarketDataRequest("USD/SGD");
-        sendMarketDataRequest("USD/MXN");
-        sendMarketDataRequest("USD/NOK");
-        sendMarketDataRequest("USD/SEK");
-        sendMarketDataRequest("USD/CAD");
-        sendMarketDataRequest("AUD/USD");
-        sendMarketDataRequest("GBP/USD");
         sendMarketDataRequest("EUR/USD");
         sendMarketDataRequest("USD/CHF");
-
+        sendMarketDataRequest("USD/JPY");
+        sendMarketDataRequest("AUD/USD");
+        sendMarketDataRequest("GBP/USD");
+        sendMarketDataRequest("USD/CAD");
+        sendMarketDataRequest("EUR/CHF");
+        sendMarketDataRequest("EUR/GBP");
+        sendMarketDataRequest("EUR/CAD");
+        sendMarketDataRequest("EUR/JPY");
+        sendMarketDataRequest("GBP/CHF");
+        sendMarketDataRequest("GBP/CAD");
+        sendMarketDataRequest("USD/TRY");
+        sendMarketDataRequest("EUR/TRY");
+        sendMarketDataRequest("USD/ZAR");
+        sendMarketDataRequest("NZD/USD");
     }
 
     while(true) {}
