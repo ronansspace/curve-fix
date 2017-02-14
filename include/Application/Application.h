@@ -5,6 +5,7 @@
 #include <chrono>
 #include <thread>
 #include <list>
+#include <iterator>
 
 #include "quickfix/Application.h"
 #include "quickfix/MessageCracker.h"
