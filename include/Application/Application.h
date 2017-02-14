@@ -31,7 +31,6 @@ private:
     bool isLoggedOn;
     bool isMarketSession;
     FIX::SessionID sessionID;
-    std::list<std::string> ccyPairs;
 
     void onCreate( const FIX::SessionID& i ) { sessionID = i;}
     void onLogon( const FIX::SessionID& sessionID );

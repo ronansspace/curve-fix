@@ -45,21 +45,12 @@ void Application::onMessage
     unique_ptr<MarketDataReportHandler> mktReport(new MarketDataReportHandler());
     mktReport->toDB(marketData);
     string ccyPair = mktReport->getCcyPairStr(marketData);
-    ccyPairs.remove(ccyPair);
 
 }
 
 void Application::onMessage
         ( const FIX44::MarketDataRequestReject& mdReject, const FIX::SessionID& sessionID) {
     cout << "Process Market Data Request Reject- " << sessionID << endl;
-
-    FIX::MDReqID mdReqID;
-
-    if( mdReject.getIfSet(mdReqID) ) {
-        string mdReqIDStr = mdReject.get(mdReqID).getString();
-        string ccyPair = mdReqIDStr.substr(mdReqIDStr.length() - 7);
-        ccyPairs.remove(ccyPair);
-    }
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
@@ -69,7 +60,6 @@ void Application::sendMarketDataRequest(const string &iCcyPair) {
 
     cout << "Requesting " + iCcyPair << endl;
 
-    ccyPairs.push_back(iCcyPair);
     string requestID = "Request" + iCcyPair;
     FIX::MDReqID mdReqID( requestID );
     FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES );
@@ -109,12 +99,12 @@ void Application::run()
         sendMarketDataRequest("GBP/CHF");
         sendMarketDataRequest("GBP/CAD");
         sendMarketDataRequest("USD/TRY");
-        //sendMarketDataRequest("EUR/TRY");
-        //sendMarketDataRequest("USD/ZAR");
+        sendMarketDataRequest("EUR/TRY");
+        sendMarketDataRequest("USD/ZAR");
         sendMarketDataRequest("NZD/USD");
 
         int count = 0;
-        while(count < 10 || !ccyPairs.empty()) {
+        while(count < 10) {
             cout << "Waiting for market data requests to be filled." << endl;
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
             count++;
