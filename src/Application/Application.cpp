@@ -109,14 +109,15 @@ void Application::run()
         sendMarketDataRequest("GBP/CHF");
         sendMarketDataRequest("GBP/CAD");
         sendMarketDataRequest("USD/TRY");
-        sendMarketDataRequest("EUR/TRY");
-        sendMarketDataRequest("USD/ZAR");
+        //sendMarketDataRequest("EUR/TRY");
+        //sendMarketDataRequest("USD/ZAR");
         sendMarketDataRequest("NZD/USD");
 
-        while(!ccyPairs.empty()) {
+        int count = 0;
+        while(count < 10 || !ccyPairs.empty()) {
             cout << "Waiting for market data requests to be filled." << endl;
-            copy(ccyPairs.begin(), ccyPairs.end(), ostream_iterator<string>(cout, ";"));
             std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+            count++;
         } // Loop until all ccy pairs have been updated.
 
     } else{
