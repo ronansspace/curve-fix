@@ -44,6 +44,9 @@ void Application::onMessage
 
     unique_ptr<MarketDataReportHandler> mktReport(new MarketDataReportHandler());
     mktReport->toDB(marketData);
+    string ccyPair = mktReport->getCcyPairStr(marketData);
+    ccyPairs.remove(ccyPair);
+
 }
 
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
@@ -53,6 +56,7 @@ void Application::sendMarketDataRequest(const string &iCcyPair) {
 
     cout << "Requesting " + iCcyPair << endl;
 
+    ccyPairs.push_back(iCcyPair);
     string requestID = "Request" + iCcyPair;
     FIX::MDReqID mdReqID( requestID );
     FIX::SubscriptionRequestType subType( FIX::SubscriptionRequestType_SNAPSHOT_PLUS_UPDATES );
@@ -95,7 +99,13 @@ void Application::run()
         sendMarketDataRequest("EUR/TRY");
         sendMarketDataRequest("USD/ZAR");
         sendMarketDataRequest("NZD/USD");
+
+        while(!ccyPairs.empty()) {} // Loop until all ccy pairs have been updated.
+
+    } else{
+        while(true) {}
     }
 
-    while(true) {}
+    cout << "All Done." << endl;
+
 }

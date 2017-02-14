@@ -42,7 +42,10 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
 
         unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
 
-        pstmt->setString(1, getCcyPairStr(mktReport));
+        string ccyPair = getCcyPairStr(mktReport);
+        ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
+
+        pstmt->setString(1, ccyPair);
         pstmt->setDouble(2, getRate(mktReport));
 
         pstmt->executeUpdate();
@@ -64,9 +67,7 @@ void MarketDataReportHandler::toConsole(const FIX44::MarketDataSnapshotFullRefre
 
 string MarketDataReportHandler::getCcyPairStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
     FIX::Symbol symbol;
-    string strSymbol = mktReport.getIfSet(symbol) ? mktReport.get(symbol).getString() : "";
-    strSymbol.erase(remove(strSymbol.begin(), strSymbol.end(), '/'));
-    return strSymbol;
+    return mktReport.getIfSet(symbol) ? mktReport.get(symbol).getString() : "";
 }
 
 string MarketDataReportHandler::getRateStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
