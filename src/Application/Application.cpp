@@ -57,7 +57,7 @@ void Application::onMessage
 
     if( mdReject.getIfSet(mdReqID) ) {
         string mdReqIDStr = mdReject.get(mdReqID).getString();
-        string ccyPair = mdReqIDStr.substr(mdReqIDStr.length() - 5);
+        string ccyPair = mdReqIDStr.substr(mdReqIDStr.length() - 7);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
         ccyPairs.remove(ccyPair);
     }
