@@ -12,6 +12,7 @@
 #include "quickfix/Mutex.h"
 #include "quickfix/fix44/ExecutionReport.h"
 #include "quickfix/fix44/MarketDataRequest.h"
+#include "quickfix/fix44/MarketDataRequestReject.h"
 #include "quickfix/fix44/MarketDataSnapshotFullRefresh.h"
 #include "ExecutionReport/ExecutionReportHandler.h"
 #include "MarketDataReport/MarketDataReportHandler.h"
@@ -46,6 +47,7 @@ private:
     void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
     void onMessage( const FIX44::MarketDataRequest&, const FIX::SessionID& );
     void onMessage( const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID& );
+    void onMessage( const FIX44::MarketDataRequestReject&, const FIX::SessionID& );
 
     void sendMarketDataRequest(const std::string& iCcyPair);
 

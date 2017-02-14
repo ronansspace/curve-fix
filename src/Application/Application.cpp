@@ -49,6 +49,20 @@ void Application::onMessage
 
 }
 
+void Application::onMessage
+        ( const FIX44::MarketDataRequestReject& mdReject, const FIX::SessionID& sessionID) {
+    cout << "Process Market Data Request Reject- " << sessionID << endl;
+
+    FIX::MDReqID mdReqID;
+
+    if( mdReject.getIfSet(mdReqID) ) {
+        string mdReqIDStr = mdReject.get(mdReqID).getString();
+        string ccyPair = mdReqIDStr.substr(mdReqIDStr.length() - 5);
+        ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
+        ccyPairs.remove(ccyPair);
+    }
+}
+
 void Application::onMessage(const FIX44::TradingSessionStatus &, const FIX::SessionID &) {
 }
 

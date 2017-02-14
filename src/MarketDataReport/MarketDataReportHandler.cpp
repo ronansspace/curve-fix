@@ -37,13 +37,13 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7"));
         con->setSchema("cmarkets");
 
-        unique_ptr<sql::Statement> stmt(con->createStatement());
-        stmt->execute("DELETE FROM ccyrate WHERE ccypair='" +getCcyPairStr(mktReport) + "'");
-
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
-
         string ccyPair = getCcyPairStr(mktReport);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
+
+        unique_ptr<sql::Statement> stmt(con->createStatement());
+        stmt->execute("DELETE FROM ccyrate WHERE ccypair='" +ccyPair + "'");
+
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
 
         pstmt->setString(1, ccyPair);
         pstmt->setDouble(2, getRate(mktReport));
