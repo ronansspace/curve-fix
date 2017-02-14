@@ -113,7 +113,10 @@ void Application::run()
         sendMarketDataRequest("USD/ZAR");
         sendMarketDataRequest("NZD/USD");
 
-        while(!ccyPairs.empty()) {} // Loop until all ccy pairs have been updated.
+        while(!ccyPairs.empty()) {
+            cout << "Waiting for market data requests to be filled." << endl;
+            std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+        } // Loop until all ccy pairs have been updated.
 
     } else{
         while(true) {}
