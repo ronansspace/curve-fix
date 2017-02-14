@@ -17,6 +17,7 @@
 #include "quickfix/fix44/MarketDataSnapshotFullRefresh.h"
 #include "ExecutionReport/ExecutionReportHandler.h"
 #include "MarketDataReport/MarketDataReportHandler.h"
+#include "MarketDataReport/MarketDataRequestor.h"
 
 class Application :
         public FIX::Application,
