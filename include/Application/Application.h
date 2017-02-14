@@ -4,6 +4,7 @@
 #include <memory>
 #include <chrono>
 #include <thread>
+#include <list>
 
 #include "quickfix/Application.h"
 #include "quickfix/MessageCracker.h"
