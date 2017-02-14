@@ -59,6 +59,7 @@ void Application::onMessage
         string mdReqIDStr = mdReject.get(mdReqID).getString();
         string ccyPair = mdReqIDStr.substr(mdReqIDStr.length() - 7);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
+        cout << "Ccy Pair Checking " << ccyPair << endl;
         ccyPairs.remove(ccyPair);
     }
 }
