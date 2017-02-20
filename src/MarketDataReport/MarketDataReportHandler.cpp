@@ -34,7 +34,7 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
     try {
         sql::Driver *driver = get_driver_instance();
 
-        unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "bc43f15f516460e8966700a05761371e0235799a6d86ffd7"));
+        unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "f6a23e727b2ec091c4a42d117ef744bcf8ee7dbc59802700"));
         con->setSchema("cmarkets");
 
         string ccyPair = getCcyPairStr(mktReport);
