@@ -8,7 +8,8 @@ int main( int argc, char** argv )
     {
         std::cout << "usage: " << argv[ 0 ]
                   << " QuickFIX Settings File."
-                  << "isMarketSession(1/0)" << std::endl;
+                  << "isMarketSession(true/false)."
+                  << std::endl;
         return 0;
     }
     std::string file = argv[ 1 ];

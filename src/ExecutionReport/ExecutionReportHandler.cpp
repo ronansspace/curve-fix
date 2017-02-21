@@ -60,7 +60,17 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
     try {
         sql::Driver *driver = get_driver_instance();
 
-        unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", "f6a23e727b2ec091c4a42d117ef744bcf8ee7dbc59802700"));
+        ifstream infile("/root/.mysql_password");
+        string sLine;
+        if (infile.good())
+        {
+
+            getline(infile, sLine);
+        }
+
+        infile.close();
+
+        unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", sLine));
         con->setSchema("cmarkets");
 
         unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
