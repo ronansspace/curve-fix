@@ -379,6 +379,11 @@ string ExecutionReportHandler::getSecondaryExecIDStr(const FIX44::ExecutionRepor
 
 string ExecutionReportHandler::getPartyIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::NoPartyIDs noPartyIDs;
+
+    if(!execReport.getIfSet(noPartyIDs)) {
+        return "";
+    }
+
     if( !execReport.get(noPartyIDs).getValue() )
         return "";
 
@@ -392,6 +397,11 @@ string ExecutionReportHandler::getPartyIDStr(const FIX44::ExecutionReport& execR
 
 string ExecutionReportHandler::getContraBrokerStr(const FIX44::ExecutionReport& execReport) const {
     FIX::NoContraBrokers noContraBrokers;
+
+    if(!execReport.getIfSet(noContraBrokers)) {
+        return "";
+    }
+
     if( !execReport.get(noContraBrokers).getValue() )
         return "";
 
