@@ -106,6 +106,169 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
         pstmt->executeUpdate();
 
+
+        unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=?"));
+        pstmt1->setString(1, getOrderIDStr(execReport));
+        unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
+
+       if(res->rowsCount() == 0) {
+           unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+
+           pstmt->setString(1, getAccountStr(execReport));
+           pstmt->setString(2, getSymbolStr(execReport));
+           pstmt->setDouble(3, getAvgPx(execReport));
+           pstmt->setString(4, getClOrdIDStr(execReport));
+           pstmt->setDouble(5, getCumQty(execReport));
+           pstmt->setString(6, getCurrencyStr(execReport));
+           pstmt->setString(7, getExecIDStr(execReport));
+           pstmt->setDouble(8, getLastPx(execReport));
+           pstmt->setDouble(9, getLastQty(execReport));
+           pstmt->setString(10, getOrderIDStr(execReport));
+           pstmt->setDouble(11, getOrderQty(execReport));
+           pstmt->setString(12, getOrdStatusStr(execReport));
+           pstmt->setString(13, getOrdTypeStr(execReport));
+           pstmt->setDouble(14, getPrice(execReport));
+           pstmt->setString(15, getSideStr(execReport));
+           pstmt->setString(16, getTimeInForceStr(execReport));
+           pstmt->setString(17, getTransactTimeStr(execReport));
+           pstmt->setString(18, getSettlDateStr(execReport));
+           pstmt->setString(19, getListIDStr(execReport));
+           pstmt->setString(20, getTradeDateStr(execReport));
+           pstmt->setString(21, getExecTypeStr(execReport));
+           pstmt->setDouble(22, getLeavesQty(execReport));
+           pstmt->setString(23, getEffectiveTimeStr(execReport));
+           pstmt->setString(24, getNoContraBrokersStr(execReport));
+           pstmt->setString(25, getSecondaryExecIDStr(execReport));
+           pstmt->setString(26, getPartyIDStr(execReport));
+           pstmt->setString(27, getContraBrokerStr(execReport));
+           pstmt->setString(28, "TraderTools");
+           pstmt->setBoolean(29, 0);
+
+           pstmt->executeUpdate();
+       } else {
+           unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=? AND Account=?"));
+           pstmt1->setString(1, getOrderIDStr(execReport));
+           pstmt1->setString(2, getAccountStr(execReport));
+           unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
+
+           if(res->rowsCount() == 0) {
+               unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+
+               pstmt->setString(1, getAccountStr(execReport));
+               pstmt->setString(2, getSymbolStr(execReport));
+               pstmt->setDouble(3, getAvgPx(execReport));
+               pstmt->setString(4, getClOrdIDStr(execReport));
+               pstmt->setDouble(5, getCumQty(execReport));
+               pstmt->setString(6, getCurrencyStr(execReport));
+               pstmt->setString(7, getExecIDStr(execReport));
+               pstmt->setDouble(8, getLastPx(execReport));
+               pstmt->setDouble(9, getLastQty(execReport));
+               pstmt->setString(10, getOrderIDStr(execReport));
+               pstmt->setDouble(11, getOrderQty(execReport));
+               pstmt->setString(12, getOrdStatusStr(execReport));
+               pstmt->setString(13, getOrdTypeStr(execReport));
+               pstmt->setDouble(14, getPrice(execReport));
+               pstmt->setString(15, getSideStr(execReport) == "Buy" ? "Sell" : "Buy");
+               pstmt->setString(16, getTimeInForceStr(execReport));
+               pstmt->setString(17, getTransactTimeStr(execReport));
+               pstmt->setString(18, getSettlDateStr(execReport));
+               pstmt->setString(19, getListIDStr(execReport));
+               pstmt->setString(20, getTradeDateStr(execReport));
+               pstmt->setString(21, getExecTypeStr(execReport));
+               pstmt->setDouble(22, getLeavesQty(execReport));
+               pstmt->setString(23, getEffectiveTimeStr(execReport));
+               pstmt->setString(24, getNoContraBrokersStr(execReport));
+               pstmt->setString(25, getSecondaryExecIDStr(execReport));
+               pstmt->setString(26, getPartyIDStr(execReport));
+               pstmt->setString(27, getContraBrokerStr(execReport));
+               pstmt->setString(28, "TraderTools");
+               pstmt->setBoolean(29, 1);
+
+               pstmt->executeUpdate();
+           } else {
+               unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=? AND Account=? AND ClientOrder=true"));
+               pstmt1->setString(1, getOrderIDStr(execReport));
+               pstmt1->setString(2, getAccountStr(execReport));
+               unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
+
+               if(res->rowsCount() == 0) {
+                   unique_ptr<sql::Statement> stmt(con->createStatement());
+                   stmt->execute("DELETE FROM FIXOrderReport WHERE OrderID='" +getOrderIDStr(execReport) + "' AND Account='" + getAccountStr(execReport) + "'");
+
+                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+
+                   pstmt->setString(1, getAccountStr(execReport));
+                   pstmt->setString(2, getSymbolStr(execReport));
+                   pstmt->setDouble(3, getAvgPx(execReport));
+                   pstmt->setString(4, getClOrdIDStr(execReport));
+                   pstmt->setDouble(5, getCumQty(execReport));
+                   pstmt->setString(6, getCurrencyStr(execReport));
+                   pstmt->setString(7, getExecIDStr(execReport));
+                   pstmt->setDouble(8, getLastPx(execReport));
+                   pstmt->setDouble(9, getLastQty(execReport));
+                   pstmt->setString(10, getOrderIDStr(execReport));
+                   pstmt->setDouble(11, getOrderQty(execReport));
+                   pstmt->setString(12, getOrdStatusStr(execReport));
+                   pstmt->setString(13, getOrdTypeStr(execReport));
+                   pstmt->setDouble(14, getPrice(execReport));
+                   pstmt->setString(15, getSideStr(execReport));
+                   pstmt->setString(16, getTimeInForceStr(execReport));
+                   pstmt->setString(17, getTransactTimeStr(execReport));
+                   pstmt->setString(18, getSettlDateStr(execReport));
+                   pstmt->setString(19, getListIDStr(execReport));
+                   pstmt->setString(20, getTradeDateStr(execReport));
+                   pstmt->setString(21, getExecTypeStr(execReport));
+                   pstmt->setDouble(22, getLeavesQty(execReport));
+                   pstmt->setString(23, getEffectiveTimeStr(execReport));
+                   pstmt->setString(24, getNoContraBrokersStr(execReport));
+                   pstmt->setString(25, getSecondaryExecIDStr(execReport));
+                   pstmt->setString(26, getPartyIDStr(execReport));
+                   pstmt->setString(27, getContraBrokerStr(execReport));
+                   pstmt->setString(28, "TraderTools");
+                   pstmt->setBoolean(29, 0);
+
+                   pstmt->executeUpdate();
+
+               } else {
+                   unique_ptr<sql::Statement> stmt(con->createStatement());
+                   stmt->execute("DELETE FROM FIXOrderReport WHERE OrderID='" +getOrderIDStr(execReport) + "' AND Account='" + getAccountStr(execReport) + "'");
+
+                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+
+                   pstmt->setString(1, getAccountStr(execReport));
+                   pstmt->setString(2, getSymbolStr(execReport));
+                   pstmt->setDouble(3, getAvgPx(execReport));
+                   pstmt->setString(4, getClOrdIDStr(execReport));
+                   pstmt->setDouble(5, getCumQty(execReport));
+                   pstmt->setString(6, getCurrencyStr(execReport));
+                   pstmt->setString(7, getExecIDStr(execReport));
+                   pstmt->setDouble(8, getLastPx(execReport));
+                   pstmt->setDouble(9, getLastQty(execReport));
+                   pstmt->setString(10, getOrderIDStr(execReport));
+                   pstmt->setDouble(11, getOrderQty(execReport));
+                   pstmt->setString(12, getOrdStatusStr(execReport));
+                   pstmt->setString(13, getOrdTypeStr(execReport));
+                   pstmt->setDouble(14, getPrice(execReport));
+                   pstmt->setString(15, getSideStr(execReport) == "Buy" ? "Sell" : "Buy");
+                   pstmt->setString(16, getTimeInForceStr(execReport));
+                   pstmt->setString(17, getTransactTimeStr(execReport));
+                   pstmt->setString(18, getSettlDateStr(execReport));
+                   pstmt->setString(19, getListIDStr(execReport));
+                   pstmt->setString(20, getTradeDateStr(execReport));
+                   pstmt->setString(21, getExecTypeStr(execReport));
+                   pstmt->setDouble(22, getLeavesQty(execReport));
+                   pstmt->setString(23, getEffectiveTimeStr(execReport));
+                   pstmt->setString(24, getNoContraBrokersStr(execReport));
+                   pstmt->setString(25, getSecondaryExecIDStr(execReport));
+                   pstmt->setString(26, getPartyIDStr(execReport));
+                   pstmt->setString(27, getContraBrokerStr(execReport));
+                   pstmt->setString(28, "TraderTools");
+                   pstmt->setBoolean(29, 1);
+
+                   pstmt->executeUpdate();
+               }
+           }
+       }
     } catch (sql::SQLException &e) {
         cout << "# ERR: SQLException in " << __FILE__;
         cout << "# ERR: " << e.what();
