@@ -17,9 +17,11 @@
 
 class ExecutionReportHandler
 {
+private:
+    std::string sourceSystem;
 public:
 
-    ExecutionReportHandler(){};
+    ExecutionReportHandler(std::string iSourceSystem){ sourceSystem = iSourceSystem;}
 
     void toFile(const FIX44::ExecutionReport& execReport, const std::string & fileName) const;
     void toDB(const FIX44::ExecutionReport& execReport) const;

@@ -26,11 +26,13 @@ class Application :
 public:
     void run();
     void setIsLoggedOn(bool i) {isLoggedOn = i;}
+    void setSourceSystem(std::string i) {sourceSystem = i;}
     void setIsMarketSession(bool i) {isMarketSession = i;}
 
 private:
     bool isLoggedOn;
     bool isMarketSession;
+    std::string sourceSystem;
     FIX::SessionID sessionID;
 
     void onCreate( const FIX::SessionID& i ) { sessionID = i;}

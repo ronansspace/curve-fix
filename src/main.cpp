@@ -4,15 +4,17 @@
 
 int main( int argc, char** argv )
 {
-    if ( argc != 3 )
+    if ( argc != 4 )
     {
         std::cout << "usage: " << argv[ 0 ]
                   << " QuickFIX Settings File."
-                  << "isMarketSession(true/false)."
+                  << " isMarketSession(true/false)."
+                  << " source system.."
                   << std::endl;
         return 0;
     }
     std::string file = argv[ 1 ];
+    std::string source = argv[3];
     std::stringstream ss(argv[2]);
     bool isMarketSession;
     if(!(ss >> std::boolalpha >> isMarketSession)) {
@@ -24,6 +26,7 @@ int main( int argc, char** argv )
         FIX::SessionSettings settings( file );
         Application application;
         application.setIsLoggedOn(false);
+        application.setSourceSystem(source);
         application.setIsMarketSession(isMarketSession);
         FIX::FileStoreFactory storeFactory( settings );
         FIX::ScreenLogFactory logFactory( settings );

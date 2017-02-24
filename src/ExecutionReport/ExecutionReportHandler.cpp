@@ -33,7 +33,7 @@ map<string, string> ExecutionReportHandler::toMap(const FIX44::ExecutionReport& 
     fields.insert(pair<string, string>("SecondaryExecID", getSecondaryExecIDStr(execReport)));
     fields.insert(pair<string, string>("PartyID", getPartyIDStr(execReport)));
     fields.insert(pair<string, string>("ContraBroker", getContraBrokerStr(execReport)));
-    fields.insert(pair<string, string>("SourceSystem", "TraderTools"));
+    fields.insert(pair<string, string>("SourceSystem", this->sourceSystem));
 
     return fields;
 
@@ -102,7 +102,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         pstmt->setString(25, getSecondaryExecIDStr(execReport));
         pstmt->setString(26, getPartyIDStr(execReport));
         pstmt->setString(27, getContraBrokerStr(execReport));
-        pstmt->setString(28, "TraderTools");
+        pstmt->setString(28, this->sourceSystem);
 
         pstmt->executeUpdate();
 
@@ -141,7 +141,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
            pstmt->setString(25, getSecondaryExecIDStr(execReport));
            pstmt->setString(26, getPartyIDStr(execReport));
            pstmt->setString(27, getContraBrokerStr(execReport));
-           pstmt->setString(28, "TraderTools");
+           pstmt->setString(28, this->sourceSystem);
            pstmt->setBoolean(29, 0);
 
            pstmt->executeUpdate();
@@ -181,7 +181,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmt->setString(25, getSecondaryExecIDStr(execReport));
                pstmt->setString(26, getPartyIDStr(execReport));
                pstmt->setString(27, getContraBrokerStr(execReport));
-               pstmt->setString(28, "TraderTools");
+               pstmt->setString(28, this->sourceSystem);
                pstmt->setBoolean(29, 1);
 
                pstmt->executeUpdate();
@@ -224,7 +224,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmt->setString(25, getSecondaryExecIDStr(execReport));
                    pstmt->setString(26, getPartyIDStr(execReport));
                    pstmt->setString(27, getContraBrokerStr(execReport));
-                   pstmt->setString(28, "TraderTools");
+                   pstmt->setString(28, this->sourceSystem);
                    pstmt->setBoolean(29, 0);
 
                    pstmt->executeUpdate();
@@ -262,7 +262,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmt->setString(25, getSecondaryExecIDStr(execReport));
                    pstmt->setString(26, getPartyIDStr(execReport));
                    pstmt->setString(27, getContraBrokerStr(execReport));
-                   pstmt->setString(28, "TraderTools");
+                   pstmt->setString(28, this->sourceSystem);
                    pstmt->setBoolean(29, 1);
 
                    pstmt->executeUpdate();

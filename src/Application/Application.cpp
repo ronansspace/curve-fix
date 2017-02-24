@@ -29,7 +29,7 @@ void Application::onMessage
 
     cout << "Processing Execution Report - " << sessionID << endl;
 
-    unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler());
+    unique_ptr<ExecutionReportHandler> execReport(new ExecutionReportHandler(sourceSystem));
     execReport->toDB(executionReport);
 }
 
