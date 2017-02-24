@@ -50,16 +50,10 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         string ccyPair = getCcyPairStr(mktReport);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
 
-        //unique_ptr<sql::Statement> stmt(con->createStatement());
-        //stmt->execute("DELETE FROM ccyrate WHERE ccypair='" +ccyPair + "'");
-
-        //unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
-
-        //pstmt->setString(1, ccyPair);
-        //pstmt->setDouble(2, getRate(mktReport));
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET rate=? WHERE ccypair=?"));
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET rate=?, date=? WHERE ccypair=?"));
         pstmt->setDouble(1, getRate(mktReport));
-        pstmt->setString(2, ccyPair);
+        pstmt->setString(2, getSendingTimeStr(mktReport));
+        pstmt->setString(3, ccyPair);
         pstmt->executeUpdate();
 
     } catch (sql::SQLException &e) {
@@ -75,6 +69,12 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
 
 void MarketDataReportHandler::toConsole(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
     cout << mktReport.toString() << endl;
+}
+
+string MarketDataReportHandler::getSendingTimeStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
+    FIX::SendingTime sendingTime;
+    FIX44::Header header = mktReport.getHeader();
+    return header.getIfSet(sendingTime) ? header.get(sendingTime).getString() : "";
 }
 
 string MarketDataReportHandler::getCcyPairStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {

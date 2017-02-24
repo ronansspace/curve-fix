@@ -26,6 +26,7 @@ public:
     void toConsole(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
     std::map<std::string, std::string> toMap(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
 
+    std::string getSendingTimeStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
     std::string getCcyPairStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
     std::string getRateStr(const FIX44::MarketDataSnapshotFullRefresh& execReport) const;
     double getRate(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
