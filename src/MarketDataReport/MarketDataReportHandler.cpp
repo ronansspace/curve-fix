@@ -50,14 +50,16 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         string ccyPair = getCcyPairStr(mktReport);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
 
-        unique_ptr<sql::Statement> stmt(con->createStatement());
-        stmt->execute("DELETE FROM ccyrate WHERE ccypair='" +ccyPair + "'");
+        //unique_ptr<sql::Statement> stmt(con->createStatement());
+        //stmt->execute("DELETE FROM ccyrate WHERE ccypair='" +ccyPair + "'");
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
+        //unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate(ccypair,rate) VALUES (?,?)"));
 
-        pstmt->setString(1, ccyPair);
-        pstmt->setDouble(2, getRate(mktReport));
-
+        //pstmt->setString(1, ccyPair);
+        //pstmt->setDouble(2, getRate(mktReport));
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET rate=? WHERE ccypair=?"));
+        pstmt->setDouble(1, getRate(mktReport));
+        pstmt->setString(2, ccyPair);
         pstmt->executeUpdate();
 
     } catch (sql::SQLException &e) {
