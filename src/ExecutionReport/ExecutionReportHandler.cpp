@@ -159,7 +159,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
            pstmtOrd->setString(1, getPartyIDStr(execReport));
            pstmtOrd->setString(2, getAccountStr(execReport));
-           pstmtOrd->setString(3, getSymbolStr(execReport));
+           pstmtOrd->setString(3, getSymbolStr(execReport).erase(3, 1));
            pstmtOrd->setString(4, getSideStr(execReport).substr(0,1));
            pstmtOrd->setDouble(5, getOrderQty(execReport));
            pstmtOrd->setString(6, getAvgPxStr(execReport));
@@ -223,7 +223,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                pstmtOrd->setString(1, getPartyIDStr(execReport));
                pstmtOrd->setString(2, getAccountStr(execReport));
-               pstmtOrd->setString(3, getSymbolStr(execReport));
+               pstmtOrd->setString(3, getSymbolStr(execReport).erase(3, 1));
                pstmtOrd->setString(4, getSideStr(execReport).substr(0,1));
                pstmtOrd->setDouble(5, getOrderQty(execReport));
                pstmtOrd->setString(6, getAvgPxStr(execReport));
@@ -292,7 +292,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                    pstmtOrd->setString(1, getPartyIDStr(execReport));
                    pstmtOrd->setString(2, getAccountStr(execReport));
-                   pstmtOrd->setString(3, getSymbolStr(execReport));
+                   pstmtOrd->setString(3, getSymbolStr(execReport).erase(3, 1));
                    pstmtOrd->setString(4, getSideStr(execReport).substr(0,1));
                    pstmtOrd->setDouble(5, getOrderQty(execReport));
                    pstmtOrd->setString(6, getAvgPxStr(execReport));
@@ -355,7 +355,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                    pstmtOrd->setString(1, getPartyIDStr(execReport));
                    pstmtOrd->setString(2, getAccountStr(execReport));
-                   pstmtOrd->setString(3, getSymbolStr(execReport));
+                   pstmtOrd->setString(3, getSymbolStr(execReport).erase(3, 1));
                    pstmtOrd->setString(4, getSideStr(execReport).substr(0,1));
                    pstmtOrd->setDouble(5, getOrderQty(execReport));
                    pstmtOrd->setString(6, getAvgPxStr(execReport));
