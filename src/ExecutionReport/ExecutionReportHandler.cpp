@@ -106,13 +106,22 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
         pstmt->executeUpdate();
 
+        if( getAccountStr(execReport) == "Curve_LDN" ) /* zero-spread so will duplicate in PL */
+            return;
 
-        unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=?"));
-        pstmt1->setString(1, getOrderIDStr(execReport));
+        string curveOrder = getExecIDStr(execReport);
+        curveOrder.erase(curveOrder.end()- 4, curveOrder.end());
+
+        if( !curveOrder.substr(0, 2).compare("V-"))
+            curveOrder.erase(0,2);
+
+
+        unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=?"));
+        pstmt1->setString(1, curveOrder);
         unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
 
        if(res->rowsCount() == 0) {
-           unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+           unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
            pstmt->setString(1, getAccountStr(execReport));
            pstmt->setString(2, getSymbolStr(execReport));
@@ -143,16 +152,17 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
            pstmt->setString(27, getContraBrokerStr(execReport));
            pstmt->setString(28, this->sourceSystem);
            pstmt->setBoolean(29, 0);
+           pstmt->setString(30, curveOrder);
 
            pstmt->executeUpdate();
        } else {
-           unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=? AND Account=?"));
-           pstmt1->setString(1, getOrderIDStr(execReport));
+           unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=? AND Account=?"));
+           pstmt1->setString(1, curveOrder);
            pstmt1->setString(2, getAccountStr(execReport));
            unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
 
            if(res->rowsCount() == 0) {
-               unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+               unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                pstmt->setString(1, getAccountStr(execReport));
                pstmt->setString(2, getSymbolStr(execReport));
@@ -183,19 +193,20 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmt->setString(27, getContraBrokerStr(execReport));
                pstmt->setString(28, this->sourceSystem);
                pstmt->setBoolean(29, 1);
+               pstmt->setString(30, curveOrder);
 
                pstmt->executeUpdate();
            } else {
-               unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE OrderID=? AND Account=? AND ClientOrder=true"));
-               pstmt1->setString(1, getOrderIDStr(execReport));
+               unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=? AND Account=? AND ClientOrder=true"));
+               pstmt1->setString(1, curveOrder);
                pstmt1->setString(2, getAccountStr(execReport));
                unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
 
                if(res->rowsCount() == 0) {
                    unique_ptr<sql::Statement> stmt(con->createStatement());
-                   stmt->execute("DELETE FROM FIXOrderReport WHERE OrderID='" +getOrderIDStr(execReport) + "' AND Account='" + getAccountStr(execReport) + "'");
+                   stmt->execute("DELETE FROM FIXOrderReport WHERE CurveOrder='" + curveOrder + "' AND Account='" + getAccountStr(execReport) + "'");
 
-                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                    pstmt->setString(1, getAccountStr(execReport));
                    pstmt->setString(2, getSymbolStr(execReport));
@@ -226,14 +237,15 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmt->setString(27, getContraBrokerStr(execReport));
                    pstmt->setString(28, this->sourceSystem);
                    pstmt->setBoolean(29, 0);
+                   pstmt->setString(30, curveOrder);
 
                    pstmt->executeUpdate();
 
                } else {
                    unique_ptr<sql::Statement> stmt(con->createStatement());
-                   stmt->execute("DELETE FROM FIXOrderReport WHERE OrderID='" +getOrderIDStr(execReport) + "' AND Account='" + getAccountStr(execReport) + "'");
+                   stmt->execute("DELETE FROM FIXOrderReport WHERE CurveOrder='" + curveOrder + "' AND Account='" + getAccountStr(execReport) + "'");
 
-                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                    pstmt->setString(1, getAccountStr(execReport));
                    pstmt->setString(2, getSymbolStr(execReport));
@@ -264,6 +276,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmt->setString(27, getContraBrokerStr(execReport));
                    pstmt->setString(28, this->sourceSystem);
                    pstmt->setBoolean(29, 1);
+                   pstmt->setString(30, curveOrder);
 
                    pstmt->executeUpdate();
                }
