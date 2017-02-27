@@ -164,8 +164,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
            pstmtOrd->setDouble(5, getOrderQty(execReport));
            pstmtOrd->setString(6, getAvgPxStr(execReport));
            pstmtOrd->setString(7, "Multiply");
-           pstmtOrd->setString(8, getTradeDateStr(execReport));
-           pstmtOrd->setString(9, getSettlDateStr(execReport));
+           pstmtOrd->setString(8, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
+           pstmtOrd->setString(9, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
            pstmtOrd->setString(10, "FX");
            pstmtOrd->setString(11, "RBS");
            pstmtOrd->setString(12, getTransactTimeStr(execReport));
@@ -228,8 +228,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmtOrd->setDouble(5, getOrderQty(execReport));
                pstmtOrd->setString(6, getAvgPxStr(execReport));
                pstmtOrd->setString(7, "Multiply");
-               pstmtOrd->setString(8, getTradeDateStr(execReport));
-               pstmtOrd->setString(9, getSettlDateStr(execReport));
+               pstmtOrd->setString(8, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
+               pstmtOrd->setString(9, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
                pstmtOrd->setString(10, "FX");
                pstmtOrd->setString(11, "RBS");
                pstmtOrd->setString(12, getTransactTimeStr(execReport));
@@ -297,8 +297,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setDouble(5, getOrderQty(execReport));
                    pstmtOrd->setString(6, getAvgPxStr(execReport));
                    pstmtOrd->setString(7, "Multiply");
-                   pstmtOrd->setString(8, getTradeDateStr(execReport));
-                   pstmtOrd->setString(9, getSettlDateStr(execReport));
+                   pstmtOrd->setString(8, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
+                   pstmtOrd->setString(9, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
                    pstmtOrd->setString(10, "FX");
                    pstmtOrd->setString(11, "RBS");
                    pstmtOrd->setString(12, getTransactTimeStr(execReport));
@@ -360,8 +360,8 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setDouble(5, getOrderQty(execReport));
                    pstmtOrd->setString(6, getAvgPxStr(execReport));
                    pstmtOrd->setString(7, "Multiply");
-                   pstmtOrd->setString(8, getTradeDateStr(execReport));
-                   pstmtOrd->setString(9, getSettlDateStr(execReport));
+                   pstmtOrd->setString(8, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
+                   pstmtOrd->setString(9, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
                    pstmtOrd->setString(10, "FX");
                    pstmtOrd->setString(11, "RBS");
                    pstmtOrd->setString(12, getTransactTimeStr(execReport));
