@@ -226,7 +226,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmtOrd->setString(2, getPartyIDStr(execReport));
                pstmtOrd->setString(3, getAccountStr(execReport));
                pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-               pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
+               pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
                pstmtOrd->setDouble(6, getOrderQty(execReport));
                pstmtOrd->setString(7, getAvgPxStr(execReport));
                pstmtOrd->setString(8, "Multiply");
@@ -360,7 +360,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setString(2, getPartyIDStr(execReport));
                    pstmtOrd->setString(3, getAccountStr(execReport));
                    pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-                   pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
+                   pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
                    pstmtOrd->setDouble(6, getOrderQty(execReport));
                    pstmtOrd->setString(7, getAvgPxStr(execReport));
                    pstmtOrd->setString(8, "Multiply");
