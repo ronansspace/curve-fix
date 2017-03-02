@@ -51,7 +51,7 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
 
         unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET trade_date=?, rate=?, date=? WHERE ccypair=?"));
-        pstmt->setString(1, getTradingDateStr(mktReport));
+        pstmt->setString(1, getSendingTimeStr(mktReport).substr(0,8));
         pstmt->setDouble(2, getRate(mktReport));
         pstmt->setString(3, getSendingTimeStr(mktReport));
         pstmt->setString(4, ccyPair);
