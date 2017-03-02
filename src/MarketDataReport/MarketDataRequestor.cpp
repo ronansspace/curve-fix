@@ -21,13 +21,13 @@ void MarketDataRequestor::send(const FIX::SessionID& sessionID) const {
         unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", sLine));
         con->setSchema("cmarkets");
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("SELECT ccypair from ccyrate"));
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("SELECT pair from ccy_pair"));
         unique_ptr<sql::ResultSet> res(pstmt->executeQuery());
 
         res->afterLast();
 
         while (res->previous()) {
-            string iCcyPair = res->getString("ccypair");
+            string iCcyPair = res->getString("pair");
             iCcyPair.insert(3, "/");
             cout << "Requesting " + iCcyPair << endl;
 
