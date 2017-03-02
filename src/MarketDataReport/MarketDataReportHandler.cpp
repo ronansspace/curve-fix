@@ -50,10 +50,11 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         string ccyPair = getCcyPairStr(mktReport);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET rate=?, date=? WHERE ccypair=?"));
-        pstmt->setDouble(1, getRate(mktReport));
-        pstmt->setString(2, getSendingTimeStr(mktReport));
-        pstmt->setString(3, ccyPair);
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET trade_date=?, rate=?, date=? WHERE ccypair=?"));
+        pstmt->setString(1, getTradingDateStr(mktReport));
+        pstmt->setDouble(2, getRate(mktReport));
+        pstmt->setString(3, getSendingTimeStr(mktReport));
+        pstmt->setString(4, ccyPair);
         pstmt->executeUpdate();
 
     } catch (sql::SQLException &e) {
@@ -84,6 +85,11 @@ string MarketDataReportHandler::getCcyPairStr(const FIX44::MarketDataSnapshotFul
 
 string MarketDataReportHandler::getRateStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
     FIX::NoMDEntries noMDEntries;
+
+    if(!mktReport.getIfSet(noMDEntries)) {
+        return "";
+    }
+
     if( !mktReport.get(noMDEntries).getValue() )
         return "1";
 
@@ -92,6 +98,23 @@ string MarketDataReportHandler::getRateStr(const FIX44::MarketDataSnapshotFullRe
 
     mktReport.getGroup(1, group);
     return group.getIfSet(mdEntryPx) ? group.get(mdEntryPx).getString() : "1";
+}
+
+string MarketDataReportHandler::getTradingDateStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {
+    FIX::NoMDEntries noMDEntries;
+
+    if(!mktReport.getIfSet(noMDEntries)) {
+        return "";
+    }
+
+    if( !mktReport.get(noMDEntries).getValue() )
+        return "1";
+
+    FIX44::MarketDataSnapshotFullRefresh::NoMDEntries group;
+    FIX::MDEntryDate mdEntryDate;
+
+    mktReport.getGroup(1, group);
+    return group.getIfSet(mdEntryDate) ? group.get(mdEntryDate).getString() : "1";
 }
 
 double MarketDataReportHandler::getRate(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const {

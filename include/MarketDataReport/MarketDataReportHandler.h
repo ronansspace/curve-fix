@@ -29,6 +29,7 @@ public:
     std::string getSendingTimeStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
     std::string getCcyPairStr(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
     std::string getRateStr(const FIX44::MarketDataSnapshotFullRefresh& execReport) const;
+    std::string getTradingDateStr(const FIX44::MarketDataSnapshotFullRefresh& execReport) const;
     double getRate(const FIX44::MarketDataSnapshotFullRefresh& mktReport) const;
 
 };
