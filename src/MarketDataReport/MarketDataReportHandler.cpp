@@ -50,12 +50,26 @@ void MarketDataReportHandler::toDB(const FIX44::MarketDataSnapshotFullRefresh& m
         string ccyPair = getCcyPairStr(mktReport);
         ccyPair.erase(remove(ccyPair.begin(), ccyPair.end(), '/'));
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET trade_date=?, rate=?, date=? WHERE ccypair=?"));
-        pstmt->setString(1, getSendingTimeStr(mktReport).substr(0,8));
-        pstmt->setDouble(2, getRate(mktReport));
-        pstmt->setString(3, getSendingTimeStr(mktReport));
-        pstmt->setString(4, ccyPair);
-        pstmt->executeUpdate();
+        unique_ptr<sql::PreparedStatement> pstmtchk(con->prepareStatement("SELECT * from ccyrate where ccypair=? and trade_date=?"));
+        pstmtchk->setString(1, ccyPair);
+        pstmtchk->setString(2, getSendingTimeStr(mktReport).substr(0,8));
+        unique_ptr<sql::ResultSet> reschk(pstmtchk->executeQuery());
+
+        if(reschk->rowsCount()) {
+            unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("UPDATE ccyrate SET rate=?, date=? WHERE ccypair=? and trade_date=?"));
+            pstmt->setDouble(1, getRate(mktReport));
+            pstmt->setString(2, getSendingTimeStr(mktReport));
+            pstmt->setString(3, ccyPair);
+            pstmt->setString(4, getSendingTimeStr(mktReport).substr(0, 8));
+            pstmt->executeUpdate();
+        }else {
+            unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO ccyrate (trade_date, ccypair, rate, date) VALUES (?,?,?,?)"));
+            pstmt->setString(1, getSendingTimeStr(mktReport).substr(0, 8));
+            pstmt->setString(2, ccyPair);
+            pstmt->setDouble(3, getRate(mktReport));
+            pstmt->setString(4, getSendingTimeStr(mktReport));
+            pstmt->executeUpdate();
+        }
 
     } catch (sql::SQLException &e) {
         cout << "# ERR: SQLException in " << __FILE__;
