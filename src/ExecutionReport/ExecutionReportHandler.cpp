@@ -162,7 +162,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
            pstmtOrd->setString(3, getAccountStr(execReport));
            pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
            pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
-           pstmtOrd->setDouble(6, getOrderQty(execReport));
+           pstmtOrd->setDouble(6, getCumQty(execReport));
            pstmtOrd->setString(7, getAvgPxStr(execReport));
            pstmtOrd->setString(8, "Multiply");
            pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
@@ -227,7 +227,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmtOrd->setString(3, getAccountStr(execReport));
                pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
                pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
-               pstmtOrd->setDouble(6, getOrderQty(execReport));
+               pstmtOrd->setDouble(6, getCumQty(execReport));
                pstmtOrd->setString(7, getAvgPxStr(execReport));
                pstmtOrd->setString(8, "Multiply");
                pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
@@ -297,7 +297,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setString(3, getAccountStr(execReport));
                    pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
                    pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
-                   pstmtOrd->setDouble(6, getOrderQty(execReport));
+                   pstmtOrd->setDouble(6, getCumQty(execReport));
                    pstmtOrd->setString(7, getAvgPxStr(execReport));
                    pstmtOrd->setString(8, "Multiply");
                    pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
@@ -361,7 +361,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setString(3, getAccountStr(execReport));
                    pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
                    pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
-                   pstmtOrd->setDouble(6, getOrderQty(execReport));
+                   pstmtOrd->setDouble(6, getCumQty(execReport));
                    pstmtOrd->setString(7, getAvgPxStr(execReport));
                    pstmtOrd->setString(8, "Multiply");
                    pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
