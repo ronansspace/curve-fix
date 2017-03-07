@@ -2,14 +2,22 @@
 #define CURVE_APPLICATION_H
 
 #include <memory>
+#include <chrono>
+#include <thread>
+#include <list>
+#include <iterator>
 
 #include "quickfix/Application.h"
 #include "quickfix/MessageCracker.h"
 #include "quickfix/Values.h"
 #include "quickfix/Mutex.h"
 #include "quickfix/fix44/ExecutionReport.h"
-
+#include "quickfix/fix44/MarketDataRequest.h"
+#include "quickfix/fix44/MarketDataRequestReject.h"
+#include "quickfix/fix44/MarketDataSnapshotFullRefresh.h"
 #include "ExecutionReport/ExecutionReportHandler.h"
+#include "MarketDataReport/MarketDataReportHandler.h"
+#include "MarketDataReport/MarketDataRequestor.h"
 
 class Application :
         public FIX::Application,
@@ -17,9 +25,17 @@ class Application :
 {
 public:
     void run();
+    void setIsLoggedOn(bool i) {isLoggedOn = i;}
+    void setSourceSystem(std::string i) {sourceSystem = i;}
+    void setIsMarketSession(bool i) {isMarketSession = i;}
 
 private:
-    void onCreate( const FIX::SessionID& ) {}
+    bool isLoggedOn;
+    bool isMarketSession;
+    std::string sourceSystem;
+    FIX::SessionID sessionID;
+
+    void onCreate( const FIX::SessionID& i ) { sessionID = i;}
     void onLogon( const FIX::SessionID& sessionID );
     void onLogout( const FIX::SessionID& sessionID );
     void toAdmin( FIX::Message&, const FIX::SessionID& ) {}
@@ -32,6 +48,11 @@ private:
 
     void onMessage( const FIX44::ExecutionReport&, const FIX::SessionID& );
     void onMessage( const FIX44::TradingSessionStatus&, const FIX::SessionID& );
+    void onMessage( const FIX44::MarketDataRequest&, const FIX::SessionID& );
+    void onMessage( const FIX44::MarketDataSnapshotFullRefresh&, const FIX::SessionID& );
+    void onMessage( const FIX44::MarketDataRequestReject&, const FIX::SessionID& );
+
+    void sendMarketDataRequest(const std::string& iCcyPair);
 
 };
 

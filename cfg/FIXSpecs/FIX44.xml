@@ -4322,6 +4322,9 @@
    <value enum='3' description='INVESTOR' />
   </field>
   <field number='167' name='SecurityType' type='STRING'>
+   <value enum='FX_SPOT' description='FX_SPOT' />
+   <value enum='FX_FWD' description='FX_FWD' />
+   <value enum='FX_NDF' description='FX_NDF' />
    <value enum='FUT' description='FUTURE' />
    <value enum='OPT' description='OPTION' />
    <value enum='EUSUPRA' description='EURO_SUPRANATIONAL_COUPONS' />

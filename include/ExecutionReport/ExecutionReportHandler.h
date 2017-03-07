@@ -17,9 +17,11 @@
 
 class ExecutionReportHandler
 {
+private:
+    std::string sourceSystem;
 public:
 
-    ExecutionReportHandler(){};
+    ExecutionReportHandler(std::string iSourceSystem){ sourceSystem = iSourceSystem;}
 
     void toFile(const FIX44::ExecutionReport& execReport, const std::string & fileName) const;
     void toDB(const FIX44::ExecutionReport& execReport) const;
@@ -51,6 +53,8 @@ public:
     std::string getEffectiveTimeStr(const FIX44::ExecutionReport& execReport) const;
     std::string getNoContraBrokersStr(const FIX44::ExecutionReport& execReport) const;
     std::string getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getPartyIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getContraBrokerStr(const FIX44::ExecutionReport& execReport) const;
 
     double getAvgPx(const FIX44::ExecutionReport& execReport) const;
     double getCumQty(const FIX44::ExecutionReport& execReport) const;
