@@ -6,6 +6,7 @@
 #include <thread>
 #include <list>
 #include <iterator>
+#include <ctime>
 
 #include "quickfix/Application.h"
 #include "quickfix/MessageCracker.h"
