@@ -81,7 +81,7 @@ void Application::run()
         bool check = true;
         while(check) {
             time_t t = time(0);   // get time now
-            struct tm *now = localtime(&t);
+            unique_ptr<tm> now(localtime(&t));
             int hour = now->tm_hour;
             int minute = now->tm_min;
 
