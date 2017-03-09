@@ -109,6 +109,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         if( getAccountStr(execReport) == "Curve_LDN" ) /* zero-spread so would duplicate in order PL */
             return;
 
+        /* This does not work for FlexTrade, and for TT when exec id is like 1-10542-11-1. SO needs to be cleaned up */
         string curveOrder = getExecIDStr(execReport);
         curveOrder.erase(curveOrder.end()- 4, curveOrder.end());
 
@@ -155,7 +156,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
            pstmt->executeUpdate();
 
-           unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+           unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
            pstmtOrd->setString(1, getCurrencyStr(execReport));
            pstmtOrd->setString(2, getPartyIDStr(execReport));
@@ -176,6 +177,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
            pstmtOrd->setString(17, "FIX");
            pstmtOrd->setString(18, "2");
            pstmtOrd->setString(19, "2");
+           pstmtOrd->setString(20, getPartyIDStr(execReport));
 
            pstmtOrd->executeUpdate();
        } else {
@@ -220,7 +222,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                pstmt->executeUpdate();
 
-               unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+               unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                pstmtOrd->setString(1, getCurrencyStr(execReport));
                pstmtOrd->setString(2, getPartyIDStr(execReport));
@@ -241,6 +243,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                pstmtOrd->setString(17, "FIX");
                pstmtOrd->setString(18, "2");
                pstmtOrd->setString(19, "2");
+               pstmtOrd->setString(20, getPartyIDStr(execReport));
 
                pstmtOrd->executeUpdate();
 
@@ -290,7 +293,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                    pstmt->executeUpdate();
 
-                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                    pstmtOrd->setString(1, getCurrencyStr(execReport));
                    pstmtOrd->setString(2, getPartyIDStr(execReport));
@@ -311,6 +314,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setString(17, "FIX");
                    pstmtOrd->setString(18, "2");
                    pstmtOrd->setString(19, "2");
+                   pstmtOrd->setString(20, getPartyIDStr(execReport));
 
                    pstmtOrd->executeUpdate();
 
@@ -354,7 +358,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
                    pstmt->executeUpdate();
 
-                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
                    pstmtOrd->setString(1, getCurrencyStr(execReport));
                    pstmtOrd->setString(2, getPartyIDStr(execReport));
@@ -375,6 +379,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
                    pstmtOrd->setString(17, "FIX");
                    pstmtOrd->setString(18, "2");
                    pstmtOrd->setString(19, "2");
+                   pstmtOrd->setString(20, getPartyIDStr(execReport));
 
                    pstmtOrd->executeUpdate();
                }
