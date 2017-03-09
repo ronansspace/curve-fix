@@ -106,285 +106,45 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
 
         pstmt->executeUpdate();
 
-        if( getAccountStr(execReport) == "Curve_LDN" ) /* zero-spread so would duplicate in order PL */
-            return;
+        if( this->sourceSystem == "TraderTools" ) {
 
-        /* This does not work for FlexTrade, and for TT when exec id is like 1-10542-11-1. SO needs to be cleaned up */
-        string curveOrder = getExecIDStr(execReport);
-        curveOrder.erase(curveOrder.end()- 4, curveOrder.end());
+            if( getAccountStr(execReport) == "Curve_LDN" ) /* zero-spread so would duplicate in order PL */
+                return;
 
-        if( !curveOrder.substr(0, 2).compare("V-"))
-            curveOrder.erase(0,2);
+            unique_ptr<TraderToolsOrder> ttOrder(new TraderToolsOrder());
+            ttOrder->setAccount(getAccountStr(execReport));
+            ttOrder->setSymbol(getSymbolStr(execReport));
+            ttOrder->setClOrdID(getClOrdIDStr(execReport));
+            ttOrder->setCurrency(getCurrencyStr(execReport));
+            ttOrder->setExecID(getExecIDStr(execReport));
+            ttOrder->setOrderID(getOrderIDStr(execReport));
+            ttOrder->setOrdStatus(getOrdStatusStr(execReport));
+            ttOrder->setOrdType(getOrdTypeStr(execReport));
+            ttOrder->setSide(getSideStr(execReport));
+            ttOrder->setTimeInForce(getTimeInForceStr(execReport));
+            ttOrder->setTransactTime(getTransactTimeStr(execReport));
+            ttOrder->setSettlDate(getSettlDateStr(execReport));
+            ttOrder->setListID(getListIDStr(execReport));
+            ttOrder->setTradeDate(getTradeDateStr(execReport));
+            ttOrder->setExecType(getExecTypeStr(execReport));
+            ttOrder->setEffectiveTime(getEffectiveTimeStr(execReport));
+            ttOrder->setNoContraBrokers(getNoContraBrokersStr(execReport));
+            ttOrder->setSecondaryExecID(getSecondaryExecIDStr(execReport));
+            ttOrder->setPartyID(getPartyIDStr(execReport));
+            ttOrder->setContraBroker(getContraBrokerStr(execReport));
+            ttOrder->setAvgPxStr(getAvgPxStr(execReport));
+            ttOrder->setAvgPx(getAvgPx(execReport));
+            ttOrder->setCumQty(getCumQty(execReport));
+            ttOrder->setLastPx(getLastPx(execReport));
+            ttOrder->setLastQty(getLastQty(execReport));
+            ttOrder->setOrderQty(getOrderQty(execReport));
+            ttOrder->setPrice(getPrice(execReport));
+            ttOrder->setLeavesQty(getLeavesQty(execReport));
 
-        unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=?"));
-        pstmt1->setString(1, curveOrder);
-        unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
+            ttOrder->processOrder();
 
-       if(res->rowsCount() == 0) {
-           unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+        }
 
-           pstmt->setString(1, getAccountStr(execReport));
-           pstmt->setString(2, getSymbolStr(execReport));
-           pstmt->setDouble(3, getAvgPx(execReport));
-           pstmt->setString(4, getClOrdIDStr(execReport));
-           pstmt->setDouble(5, getCumQty(execReport));
-           pstmt->setString(6, getCurrencyStr(execReport));
-           pstmt->setString(7, getExecIDStr(execReport));
-           pstmt->setDouble(8, getLastPx(execReport));
-           pstmt->setDouble(9, getLastQty(execReport));
-           pstmt->setString(10, getOrderIDStr(execReport));
-           pstmt->setDouble(11, getOrderQty(execReport));
-           pstmt->setString(12, getOrdStatusStr(execReport));
-           pstmt->setString(13, getOrdTypeStr(execReport));
-           pstmt->setDouble(14, getPrice(execReport));
-           pstmt->setString(15, getSideStr(execReport));
-           pstmt->setString(16, getTimeInForceStr(execReport));
-           pstmt->setString(17, getTransactTimeStr(execReport));
-           pstmt->setString(18, getSettlDateStr(execReport));
-           pstmt->setString(19, getListIDStr(execReport));
-           pstmt->setString(20, getTradeDateStr(execReport));
-           pstmt->setString(21, getExecTypeStr(execReport));
-           pstmt->setDouble(22, getLeavesQty(execReport));
-           pstmt->setString(23, getEffectiveTimeStr(execReport));
-           pstmt->setString(24, getNoContraBrokersStr(execReport));
-           pstmt->setString(25, getSecondaryExecIDStr(execReport));
-           pstmt->setString(26, getPartyIDStr(execReport));
-           pstmt->setString(27, getContraBrokerStr(execReport));
-           pstmt->setString(28, this->sourceSystem);
-           pstmt->setBoolean(29, 0);
-           pstmt->setString(30, curveOrder);
-
-           pstmt->executeUpdate();
-
-           unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-           pstmtOrd->setString(1, getCurrencyStr(execReport));
-           pstmtOrd->setString(2, getPartyIDStr(execReport));
-           pstmtOrd->setString(3, getAccountStr(execReport));
-           pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-           pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
-           pstmtOrd->setDouble(6, getCumQty(execReport));
-           pstmtOrd->setString(7, getAvgPxStr(execReport));
-           pstmtOrd->setString(8, "Multiply");
-           pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
-           pstmtOrd->setString(10, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
-           pstmtOrd->setString(11, "FX");
-           pstmtOrd->setString(12, "RBS");
-           pstmtOrd->setString(13, getTransactTimeStr(execReport));
-           pstmtOrd->setString(14, curveOrder);
-           pstmtOrd->setString(15, "FXSP");
-           pstmtOrd->setString(16, "Curve");
-           pstmtOrd->setString(17, "FIX");
-           pstmtOrd->setString(18, "2");
-           pstmtOrd->setString(19, "2");
-           pstmtOrd->setString(20, getPartyIDStr(execReport));
-
-           pstmtOrd->executeUpdate();
-       } else {
-           unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=? AND Account=?"));
-           pstmt1->setString(1, curveOrder);
-           pstmt1->setString(2, getAccountStr(execReport));
-           unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
-
-           if(res->rowsCount() == 0) {
-               unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-               pstmt->setString(1, getAccountStr(execReport));
-               pstmt->setString(2, getSymbolStr(execReport));
-               pstmt->setDouble(3, getAvgPx(execReport));
-               pstmt->setString(4, getClOrdIDStr(execReport));
-               pstmt->setDouble(5, getCumQty(execReport));
-               pstmt->setString(6, getCurrencyStr(execReport));
-               pstmt->setString(7, getExecIDStr(execReport));
-               pstmt->setDouble(8, getLastPx(execReport));
-               pstmt->setDouble(9, getLastQty(execReport));
-               pstmt->setString(10, getOrderIDStr(execReport));
-               pstmt->setDouble(11, getOrderQty(execReport));
-               pstmt->setString(12, getOrdStatusStr(execReport));
-               pstmt->setString(13, getOrdTypeStr(execReport));
-               pstmt->setDouble(14, getPrice(execReport));
-               pstmt->setString(15, getSideStr(execReport) == "Buy" ? "Sell" : "Buy");
-               pstmt->setString(16, getTimeInForceStr(execReport));
-               pstmt->setString(17, getTransactTimeStr(execReport));
-               pstmt->setString(18, getSettlDateStr(execReport));
-               pstmt->setString(19, getListIDStr(execReport));
-               pstmt->setString(20, getTradeDateStr(execReport));
-               pstmt->setString(21, getExecTypeStr(execReport));
-               pstmt->setDouble(22, getLeavesQty(execReport));
-               pstmt->setString(23, getEffectiveTimeStr(execReport));
-               pstmt->setString(24, getNoContraBrokersStr(execReport));
-               pstmt->setString(25, getSecondaryExecIDStr(execReport));
-               pstmt->setString(26, getPartyIDStr(execReport));
-               pstmt->setString(27, getContraBrokerStr(execReport));
-               pstmt->setString(28, this->sourceSystem);
-               pstmt->setBoolean(29, 1);
-               pstmt->setString(30, curveOrder);
-
-               pstmt->executeUpdate();
-
-               unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-               pstmtOrd->setString(1, getCurrencyStr(execReport));
-               pstmtOrd->setString(2, getPartyIDStr(execReport));
-               pstmtOrd->setString(3, getAccountStr(execReport));
-               pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-               pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
-               pstmtOrd->setDouble(6, getCumQty(execReport));
-               pstmtOrd->setString(7, getAvgPxStr(execReport));
-               pstmtOrd->setString(8, "Multiply");
-               pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
-               pstmtOrd->setString(10, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
-               pstmtOrd->setString(11, "FX");
-               pstmtOrd->setString(12, "RBS");
-               pstmtOrd->setString(13, getTransactTimeStr(execReport));
-               pstmtOrd->setString(14, curveOrder);
-               pstmtOrd->setString(15, "FXSP");
-               pstmtOrd->setString(16, "Curve");
-               pstmtOrd->setString(17, "FIX");
-               pstmtOrd->setString(18, "2");
-               pstmtOrd->setString(19, "2");
-               pstmtOrd->setString(20, getPartyIDStr(execReport));
-
-               pstmtOrd->executeUpdate();
-
-           } else {
-               unique_ptr<sql::PreparedStatement> pstmt1(con->prepareStatement("SELECT * from FIXOrderReport WHERE CurveOrder=? AND Account=? AND ClientOrder=true"));
-               pstmt1->setString(1, curveOrder);
-               pstmt1->setString(2, getAccountStr(execReport));
-               unique_ptr<sql::ResultSet> res(pstmt1->executeQuery());
-
-               if(res->rowsCount() == 0) {
-                   unique_ptr<sql::Statement> stmt(con->createStatement());
-                   stmt->execute("DELETE FROM FIXOrderReport WHERE CurveOrder='" + curveOrder + "' AND Account='" + getAccountStr(execReport) + "'");
-                   stmt->execute("DELETE FROM contract WHERE fx_pair_id='" + curveOrder + "' AND client='" + getAccountStr(execReport) + "'");
-
-                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-                   pstmt->setString(1, getAccountStr(execReport));
-                   pstmt->setString(2, getSymbolStr(execReport));
-                   pstmt->setDouble(3, getAvgPx(execReport));
-                   pstmt->setString(4, getClOrdIDStr(execReport));
-                   pstmt->setDouble(5, getCumQty(execReport));
-                   pstmt->setString(6, getCurrencyStr(execReport));
-                   pstmt->setString(7, getExecIDStr(execReport));
-                   pstmt->setDouble(8, getLastPx(execReport));
-                   pstmt->setDouble(9, getLastQty(execReport));
-                   pstmt->setString(10, getOrderIDStr(execReport));
-                   pstmt->setDouble(11, getOrderQty(execReport));
-                   pstmt->setString(12, getOrdStatusStr(execReport));
-                   pstmt->setString(13, getOrdTypeStr(execReport));
-                   pstmt->setDouble(14, getPrice(execReport));
-                   pstmt->setString(15, getSideStr(execReport));
-                   pstmt->setString(16, getTimeInForceStr(execReport));
-                   pstmt->setString(17, getTransactTimeStr(execReport));
-                   pstmt->setString(18, getSettlDateStr(execReport));
-                   pstmt->setString(19, getListIDStr(execReport));
-                   pstmt->setString(20, getTradeDateStr(execReport));
-                   pstmt->setString(21, getExecTypeStr(execReport));
-                   pstmt->setDouble(22, getLeavesQty(execReport));
-                   pstmt->setString(23, getEffectiveTimeStr(execReport));
-                   pstmt->setString(24, getNoContraBrokersStr(execReport));
-                   pstmt->setString(25, getSecondaryExecIDStr(execReport));
-                   pstmt->setString(26, getPartyIDStr(execReport));
-                   pstmt->setString(27, getContraBrokerStr(execReport));
-                   pstmt->setString(28, this->sourceSystem);
-                   pstmt->setBoolean(29, 0);
-                   pstmt->setString(30, curveOrder);
-
-                   pstmt->executeUpdate();
-
-                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-                   pstmtOrd->setString(1, getCurrencyStr(execReport));
-                   pstmtOrd->setString(2, getPartyIDStr(execReport));
-                   pstmtOrd->setString(3, getAccountStr(execReport));
-                   pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-                   pstmtOrd->setString(5, getSideStr(execReport).substr(0,1));
-                   pstmtOrd->setDouble(6, getCumQty(execReport));
-                   pstmtOrd->setString(7, getAvgPxStr(execReport));
-                   pstmtOrd->setString(8, "Multiply");
-                   pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
-                   pstmtOrd->setString(10, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
-                   pstmtOrd->setString(11, "FX");
-                   pstmtOrd->setString(12, "RBS");
-                   pstmtOrd->setString(13, getTransactTimeStr(execReport));
-                   pstmtOrd->setString(14, curveOrder);
-                   pstmtOrd->setString(15, "FXSP");
-                   pstmtOrd->setString(16, "Curve");
-                   pstmtOrd->setString(17, "FIX");
-                   pstmtOrd->setString(18, "2");
-                   pstmtOrd->setString(19, "2");
-                   pstmtOrd->setString(20, getPartyIDStr(execReport));
-
-                   pstmtOrd->executeUpdate();
-
-               } else {
-                   unique_ptr<sql::Statement> stmt(con->createStatement());
-                   stmt->execute("DELETE FROM FIXOrderReport WHERE CurveOrder='" + curveOrder + "' AND Account='" + getAccountStr(execReport) + "'");
-                   stmt->execute("DELETE FROM contract WHERE fx_pair_id='" + curveOrder + "' AND client='" + getAccountStr(execReport) + "'");
-
-                   unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-                   pstmt->setString(1, getAccountStr(execReport));
-                   pstmt->setString(2, getSymbolStr(execReport));
-                   pstmt->setDouble(3, getAvgPx(execReport));
-                   pstmt->setString(4, getClOrdIDStr(execReport));
-                   pstmt->setDouble(5, getCumQty(execReport));
-                   pstmt->setString(6, getCurrencyStr(execReport));
-                   pstmt->setString(7, getExecIDStr(execReport));
-                   pstmt->setDouble(8, getLastPx(execReport));
-                   pstmt->setDouble(9, getLastQty(execReport));
-                   pstmt->setString(10, getOrderIDStr(execReport));
-                   pstmt->setDouble(11, getOrderQty(execReport));
-                   pstmt->setString(12, getOrdStatusStr(execReport));
-                   pstmt->setString(13, getOrdTypeStr(execReport));
-                   pstmt->setDouble(14, getPrice(execReport));
-                   pstmt->setString(15, getSideStr(execReport) == "Buy" ? "Sell" : "Buy");
-                   pstmt->setString(16, getTimeInForceStr(execReport));
-                   pstmt->setString(17, getTransactTimeStr(execReport));
-                   pstmt->setString(18, getSettlDateStr(execReport));
-                   pstmt->setString(19, getListIDStr(execReport));
-                   pstmt->setString(20, getTradeDateStr(execReport));
-                   pstmt->setString(21, getExecTypeStr(execReport));
-                   pstmt->setDouble(22, getLeavesQty(execReport));
-                   pstmt->setString(23, getEffectiveTimeStr(execReport));
-                   pstmt->setString(24, getNoContraBrokersStr(execReport));
-                   pstmt->setString(25, getSecondaryExecIDStr(execReport));
-                   pstmt->setString(26, getPartyIDStr(execReport));
-                   pstmt->setString(27, getContraBrokerStr(execReport));
-                   pstmt->setString(28, this->sourceSystem);
-                   pstmt->setBoolean(29, 1);
-                   pstmt->setString(30, curveOrder);
-
-                   pstmt->executeUpdate();
-
-                   unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
-
-                   pstmtOrd->setString(1, getCurrencyStr(execReport));
-                   pstmtOrd->setString(2, getPartyIDStr(execReport));
-                   pstmtOrd->setString(3, getAccountStr(execReport));
-                   pstmtOrd->setString(4, getSymbolStr(execReport).erase(3, 1));
-                   pstmtOrd->setString(5, getSideStr(execReport) == "Buy" ? "S" : "B");
-                   pstmtOrd->setDouble(6, getCumQty(execReport));
-                   pstmtOrd->setString(7, getAvgPxStr(execReport));
-                   pstmtOrd->setString(8, "Multiply");
-                   pstmtOrd->setString(9, getTradeDateStr(execReport).substr(6, 2) + "/" + getTradeDateStr(execReport).substr(4, 2) + "/" + getTradeDateStr(execReport).substr(0, 4));
-                   pstmtOrd->setString(10, getSettlDateStr(execReport).substr(6, 2) + "/" + getSettlDateStr(execReport).substr(4, 2) + "/" + getSettlDateStr(execReport).substr(0, 4));
-                   pstmtOrd->setString(11, "FX");
-                   pstmtOrd->setString(12, "RBS");
-                   pstmtOrd->setString(13, getTransactTimeStr(execReport));
-                   pstmtOrd->setString(14, curveOrder);
-                   pstmtOrd->setString(15, "FXSP");
-                   pstmtOrd->setString(16, "Curve");
-                   pstmtOrd->setString(17, "FIX");
-                   pstmtOrd->setString(18, "2");
-                   pstmtOrd->setString(19, "2");
-                   pstmtOrd->setString(20, getPartyIDStr(execReport));
-
-                   pstmtOrd->executeUpdate();
-               }
-           }
-       }
     } catch (sql::SQLException &e) {
         cout << "# ERR: SQLException in " << __FILE__;
         cout << "# ERR: " << e.what();
