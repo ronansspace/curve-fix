@@ -76,12 +76,8 @@ void TraderToolsOrder::processOrder() const {
                    unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXOrderReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
                    buildFIXOrderReverse(move(pstmt))->executeUpdate();
 
-                   pstmt->executeUpdate();
-
                    unique_ptr<sql::PreparedStatement> pstmtOrd(con->prepareStatement("INSERT INTO contract ( payout_ccy, tdrID, client, ccy_pair, buy_sell, Notional, rate, calc, trade_date, value_date, traded_as, prime_broker, order_entry_time, fx_pair_id, contract, account, trade_entry_type, pb_email, client_email, client_trader) VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
                    buildFIXContractReverse(move(pstmtOrd))->executeUpdate();
-
-                   pstmtOrd->executeUpdate();
                }
            }
        }
@@ -191,10 +187,13 @@ std::unique_ptr<sql::PreparedStatement> TraderToolsOrder::buildFIXContract(std::
     if( !curveOrder.substr(0, 2).compare("V-"))
         curveOrder.erase(0,2);
 
+    string ccyPair = this->symbol;
+    ccyPair.erase(3,1);
+
     pstmtOrd->setString(1, this->currency);
     pstmtOrd->setString(2, this->partyID);
     pstmtOrd->setString(3, this->account);
-    pstmtOrd->setString(4, this->symbol);
+    pstmtOrd->setString(4, ccyPair);
     pstmtOrd->setString(5, this->side.substr(0, 1));
     pstmtOrd->setDouble(6, this->cumQty);
     pstmtOrd->setString(7, this->avgPxStr);
@@ -224,10 +223,13 @@ std::unique_ptr<sql::PreparedStatement> TraderToolsOrder::buildFIXContractRevers
     if( !curveOrder.substr(0, 2).compare("V-"))
         curveOrder.erase(0,2);
 
+    string ccyPair = this->symbol;
+    ccyPair.erase(3,1);
+
     pstmtOrd->setString(1, this->currency);
     pstmtOrd->setString(2, this->partyID);
     pstmtOrd->setString(3, this->account);
-    pstmtOrd->setString(4, this->symbol);
+    pstmtOrd->setString(4, ccyPair);
     pstmtOrd->setString(5, this->side == "Buy" ? "S" : "B");
     pstmtOrd->setDouble(6, this->cumQty);
     pstmtOrd->setString(7, this->avgPxStr);
