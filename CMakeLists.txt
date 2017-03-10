@@ -13,3 +13,5 @@ set(SOURCES src/main.cpp src/ExecutionReport/ExecutionReportHandler.cpp src/Mark
 add_executable(curve_fix ${SOURCES})
 
 target_link_libraries(curve_fix ${PROJECT_LINK_LIBS} )
+
+install(TARGETS curve_fix DESTINATION bin)
