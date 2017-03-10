@@ -1,5 +1,7 @@
 # curve-fix
 
+sudo cmake .. -DCMAKE_INSTALL_PREFIX=/usr/bin
+
 The Execution Report we get from TraderTools includes the number codes of each field.
 
 To Key -> Field mappings are described here http://www.onixs.biz/fix-dictionary/4.4/fields_by_tag.html
