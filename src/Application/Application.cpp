@@ -78,7 +78,17 @@ void Application::run()
         }
 
     } else{
-        while(true) {}
+        bool check = true;
+        while(check) {
+            time_t t = time(0);   // get time now
+            struct tm * now = localtime( & t );
+            int hour = now->tm_hour;
+            int minute = now->tm_min;
+
+            if( hour >= 23 && minute >= 55) {
+                check = false;
+            }
+        }
     }
 
     cout << "All Done." << endl;

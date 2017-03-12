@@ -15,6 +15,8 @@
 #include <cppconn/statement.h>
 #include <cppconn/prepared_statement.h>
 
+#include "TraderTools/TraderToolsOrder.h"
+
 class ExecutionReportHandler
 {
 private:

@@ -8,8 +8,16 @@ link_directories( /usr/local/lib /usr/local/share/mysql/mysql-connector-c++-1.1.
 
 include_directories(include /usr/include /usr/local/Cellar/boost/1.63.0/include /usr/local/include/quickfix /usr/local/share/mysql/mysql-connector-c++-1.1.8/include)
 
-set(SOURCES src/main.cpp src/ExecutionReport/ExecutionReportHandler.cpp src/MarketDataReport/MarketDataReportHandler.cpp src/MarketDataReport/MarketDataRequestor.cpp src/Application/Application.cpp )
+set(SOURCES src/main.cpp src/ExecutionReport/ExecutionReportHandler.cpp src/MarketDataReport/MarketDataReportHandler.cpp src/MarketDataReport/MarketDataRequestor.cpp src/Application/Application.cpp src/TraderTools/TraderToolsOrder.cpp)
 
 add_executable(curve_fix ${SOURCES})
 
 target_link_libraries(curve_fix ${PROJECT_LINK_LIBS} )
+
+SET(HS cfg/FIXSpecs/FIX44.xml cfg/flex-trade-engine.cfg cfg/trader-tools-engine-live.cfg cfg/trader-tools-engine.cfg cfg/trader-tools-MD-engine-live.cfg cfg/trader-tools-MD-engine.cfg cfg/flex-trade-engine.cfg)
+
+SET(HS1 run-TT-live.sh run-TT-MD-live.sh)
+
+install(FILES ${HS} DESTINATION curve_fix/cfg)
+install(FILES ${HS1} DESTINATION curve_fix)
+install(TARGETS curve_fix DESTINATION curve_fix)
