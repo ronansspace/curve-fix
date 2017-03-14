@@ -73,7 +73,7 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         unique_ptr<sql::Connection> con(driver->connect("tcp://localhost", "root", sLine));
         con->setSchema("cmarkets");
 
-        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
+        unique_ptr<sql::PreparedStatement> pstmt(con->prepareStatement("INSERT INTO FIXExecutionReport VALUES (?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?,?)"));
 
         pstmt->setString(1, getAccountStr(execReport));
         pstmt->setString(2, getSymbolStr(execReport));
@@ -103,6 +103,15 @@ void ExecutionReportHandler::toDB(const FIX44::ExecutionReport& execReport) cons
         pstmt->setString(26, getPartyIDStr(execReport));
         pstmt->setString(27, getContraBrokerStr(execReport));
         pstmt->setString(28, this->sourceSystem);
+        pstmt->setString(29, getSenderCompIDStr(execReport));
+        pstmt->setString(30, getTargetCompIDStr(execReport));
+        pstmt->setString(31, getDeliverToCompIDStr(execReport));
+        pstmt->setString(32, getDeliverToSubIDStr(execReport));
+        pstmt->setString(33, getSenderLocationIDStr(execReport));
+        pstmt->setString(34, getSendingTimeStr(execReport));
+        pstmt->setString(35, getLastCapacityStr(execReport));
+        pstmt->setString(36, getSecurityTypeStr(execReport));
+        pstmt->setString(37, getFlexMarketPriceStr(execReport));
 
         pstmt->executeUpdate();
 
@@ -424,6 +433,73 @@ string ExecutionReportHandler::getNoContraBrokersStr(const FIX44::ExecutionRepor
 string ExecutionReportHandler::getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const {
     FIX::SecondaryExecID secondaryExecID;
     return execReport.getIfSet(secondaryExecID) ? execReport.get(secondaryExecID).getString() : "";
+}
+
+string ExecutionReportHandler::getSenderCompIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::SenderCompID senderCompID;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(senderCompID) ? header.get(senderCompID).getString() : "";
+}
+
+string ExecutionReportHandler::getTargetCompIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::TargetCompID targetCompID;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(targetCompID) ? header.get(targetCompID).getString() : "";
+}
+
+string ExecutionReportHandler::getDeliverToCompIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::DeliverToCompID deliverToCompID;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(deliverToCompID) ? header.get(deliverToCompID).getString() : "";
+}
+
+string ExecutionReportHandler::getDeliverToSubIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::DeliverToSubID deliverToSubID;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(deliverToSubID) ? header.get(deliverToSubID).getString() : "";
+}
+
+string ExecutionReportHandler::getSenderLocationIDStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::SenderLocationID senderLocationID;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(senderLocationID) ? header.get(senderLocationID).getString() : "";
+}
+
+string ExecutionReportHandler::getSendingTimeStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::SendingTime sendingTime;
+    FIX44::Header header = execReport.getHeader();
+    return header.getIfSet(sendingTime) ? header.get(sendingTime).getString() : "";
+}
+
+string ExecutionReportHandler::getLastCapacityStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::LastCapacity lastCapacity;
+
+    string ret;
+
+    if(!execReport.getIfSet(lastCapacity)) {
+        return "";
+    }
+
+    switch (execReport.get(lastCapacity).getValue()) {
+        case '1': ret = "Agent"; break;
+        case '2': ret = "Cross as agent"; break;
+        case '3': ret = "Cross as principal"; break;
+        case '4': ret = "Principal"; break;
+        default: ret = "NoLastCapicity";
+    }
+
+    return ret;
+}
+
+string ExecutionReportHandler::getSecurityTypeStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::SecurityType securityType;
+    return execReport.getIfSet(securityType) ? execReport.get(securityType).getString() : "";
+}
+
+string ExecutionReportHandler::getFlexMarketPriceStr(const FIX44::ExecutionReport& execReport) const {
+    FIX::FieldBase field(10992, "");
+
+    return execReport.getFieldIfSet(field) ? execReport.getField(field).getString() : "";
 }
 
 string ExecutionReportHandler::getPartyIDStr(const FIX44::ExecutionReport& execReport) const {

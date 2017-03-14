@@ -60,6 +60,11 @@ void Application::run()
 {
     cout << "Running Curve FIX Client." << endl;
 
+    while(!isLoggedOn) {
+        cout << "Waiting for successful Login." << endl;
+        std::this_thread::sleep_for(std::chrono::milliseconds(1000));
+    }
+
     if(isMarketSession) {
         while(!isLoggedOn) {
             cout << "Waiting for successful Login." << endl;

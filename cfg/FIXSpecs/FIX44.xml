@@ -6595,5 +6595,6 @@
   <field number='954' name='Nested3PartySubIDType' type='INT' />
   <field number='955' name='LegContractSettlMonth' type='MONTHYEAR' />
   <field number='956' name='LegInterestAccrualDate' type='LOCALMKTDATE' />
+  <field number='10992' name='FlexMarketPrice' type='PRICE' />
  </fields>
 </fix>
