@@ -57,6 +57,15 @@ public:
     std::string getSecondaryExecIDStr(const FIX44::ExecutionReport& execReport) const;
     std::string getPartyIDStr(const FIX44::ExecutionReport& execReport) const;
     std::string getContraBrokerStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getSenderCompIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getTargetCompIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getDeliverToCompIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getDeliverToSubIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getSenderLocationIDStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getSendingTimeStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getLastCapacityStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getSecurityTypeStr(const FIX44::ExecutionReport& execReport) const;
+    std::string getFlexMarketPriceStr(const FIX44::ExecutionReport& execReport) const;
 
     double getAvgPx(const FIX44::ExecutionReport& execReport) const;
     double getCumQty(const FIX44::ExecutionReport& execReport) const;
