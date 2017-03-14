@@ -84,8 +84,9 @@ void Application::run()
             struct tm * now = localtime( & t );
             int hour = now->tm_hour;
             int minute = now->tm_min;
+            int second = now->tm_sec;
 
-            if( hour >= 23 && minute >= 55) {
+            if( hour == 4 && minute == 00 ) {
                 check = false;
             }
         }
