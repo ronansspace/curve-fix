@@ -14,7 +14,7 @@ add_executable(curve_fix ${SOURCES})
 
 target_link_libraries(curve_fix ${PROJECT_LINK_LIBS} )
 
-SET(HS cfg/FIXSpecs/FIX44.xml cfg/flex-trade-engine.cfg cfg/trader-tools-engine-live.cfg cfg/trader-tools-engine.cfg cfg/trader-tools-MD-engine-live.cfg cfg/trader-tools-MD-engine.cfg cfg/flex-trade-engine.cfg)
+SET(HS cfg/FIXSpecs/FIX44.xml cfg/flex-trade-engine.cfg cfg/trader-tools-engine-live.cfg cfg/trader-tools-engine.cfg cfg/trader-tools-MD-engine-live.cfg cfg/trader-tools-MD-engine.cfg cfg/flex-trade-engine-live.cfg)
 
 SET(HS1 run-TT-live.sh run-TT-MD-live.sh run-FlexTrade-live.sh)
 

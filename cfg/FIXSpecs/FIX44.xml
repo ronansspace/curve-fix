@@ -243,6 +243,7 @@
    <field name='PriorityIndicator' required='N' />
    <field name='PriceImprovement' required='N' />
    <field name='LastLiquidityInd' required='N' />
+   <field name='FlexMarketPrice' required='N' />
    <component name='ContAmtGrp' required='N' />
    <component name='InstrmtLegExecGrp' required='N' />
    <field name='CopyMsgIndicator' required='N' />
